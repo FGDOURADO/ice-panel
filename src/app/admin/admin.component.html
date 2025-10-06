@@ -1,0 +1,85 @@
+<div class="admin">
+  <h2>Gerenciar Sabores</h2>
+
+  <section class="categories">
+    <h3>Categorias</h3>
+    <div class="add-row">
+      <input [(ngModel)]="newCategoryName" placeholder="Nova categoria" />
+      <button (click)="addCategory()">Adicionar</button>
+    </div>
+
+    <ul class="category-list">
+      <li *ngFor="let c of categories()">
+        <input [ngModel]="c.name" (ngModelChange)="renameCategory(c, $event)" />
+        <button class="danger" (click)="removeCategory(c)">Excluir</button>
+      </li>
+    </ul>
+  </section>
+
+
+  <section class="titles">
+    <h3>Títulos</h3>
+    <div class="add-row">
+      <input [(ngModel)]="newTitleName" placeholder="Novo título" />
+      <button (click)="addTitle()">Adicionar</button>
+    </div>
+
+    <ul class="title-list">
+      <li *ngFor="let t of titles()">
+        <input [ngModel]="editTitleNames()[t.id] || t.name" (ngModelChange)="onTitleNameInput(t.id, $event)" (blur)="commitTitleName(t)" (keyup.enter)="commitTitleName(t)" />
+        <button class="danger" (click)="removeTitle(t)">Excluir</button>
+      </li>
+    </ul>
+  </section>
+
+  <section class="images">
+    <h3>Imagens</h3>
+    <div class="add-row">
+      <input [(ngModel)]="newImageName" placeholder="Nome da imagem" />
+      <input [(ngModel)]="newImageUrl" placeholder="URL da imagem (ex: /assets/images/sorvete.jpg)" />
+      <select [(ngModel)]="newImageCategoryId">
+        <option value="">Selecione uma categoria</option>
+        <option *ngFor="let c of categories()" [ngValue]="c.id">{{ c.name }}</option>
+      </select>
+      <button (click)="addImage()">Adicionar</button>
+    </div>
+
+    <div class="cat-group" *ngFor="let group of imagesByCategory()">
+      <h4 class="cat-title">{{ group.category.name }}</h4>
+      <ul class="image-list">
+        <li *ngFor="let i of group.images">
+          <div class="image-preview">
+            <img [src]="i.url" [alt]="i.name" style="max-width: 60px; max-height: 60px; object-fit: cover;" />
+          </div>
+          <input [ngModel]="editImageNames()[i.id] || i.name" (ngModelChange)="onImageNameInput(i.id, $event)" (blur)="commitImageName(i)" (keyup.enter)="commitImageName(i)" placeholder="Nome" />
+          <select [ngModel]="i.categoryId" (ngModelChange)="moveImage(i, $event)">
+            <option *ngFor="let c of categories()" [ngValue]="c.id">{{ c.name }}</option>
+          </select>
+          <button class="danger" (click)="removeImage(i)">Excluir</button>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="layout-settings">
+    <h3>Configurações de Layout</h3>
+    <div class="add-row">
+      <label>Imagem da logo (URL)
+        <input type="url" [ngModel]="flavorService.settings().logoImageUrl" (ngModelChange)="flavorService.setLogoImageUrl($event)" placeholder="https://.../logo-image.png" />
+      </label>
+    </div>
+    <div class="add-row">
+      <label>Cor dos títulos
+        <input type="color" [ngModel]="flavorService.settings().titleColor" (ngModelChange)="flavorService.setTitleColor($event)" />
+      </label>
+    </div>
+    <div class="add-row">
+      <label>
+        <input type="checkbox" [ngModel]="flavorService.settings().showGridLines" (ngModelChange)="flavorService.setShowGridLines($event)" />
+        Mostrar linhas do grid no Visor
+      </label>
+    </div>
+  </section>
+</div>
+
+

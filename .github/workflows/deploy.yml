@@ -41,9 +41,18 @@ jobs:
       with:
         path: './dist/ice-panel'
         
+    - name: Upload root index.html
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './index.html'
+        
     - name: Create 404.html for SPA routing
       run: |
         cp ./dist/ice-panel/index.html ./dist/ice-panel/404.html
+        
+    - name: Copy index.html to root
+      run: |
+        cp ./dist/ice-panel/index.html ./index.html
 
   deploy:
     environment:

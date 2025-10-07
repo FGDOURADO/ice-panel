@@ -43,6 +43,12 @@
         <p>🍦 Carregando Painel de Gelateria...</p>
     </div>
     
+    <script>
+        // Redirect to Angular app
+        sessionStorage.redirect = location.href;
+        location.href = '/ice-panel/';
+    </script>
+    
     <app-root></app-root>
 </body>
 </html>

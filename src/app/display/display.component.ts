@@ -30,6 +30,12 @@ export class DisplayComponent {
   // Busca de sabores
   readonly searchTerm = signal('');
 
+  // Método para atualizar busca
+  updateSearchTerm(value: string): void {
+    console.log('🔍 Busca atualizada:', value);
+    this.searchTerm.set(value);
+  }
+
 
   get columns(): number { return this.grid().columns; }
   get rows(): number { return this.grid().rows; }
@@ -69,6 +75,8 @@ export class DisplayComponent {
     const byCat = new Map<string, any[]>();
     const searchLower = this.searchTerm().toLowerCase().trim();
     
+    console.log('🔍 Computed executado com termo:', searchLower);
+    
     for (const image of this.images()) {
       if (usedImageIds.has(image.id)) continue; // Skip used images
       
@@ -83,10 +91,13 @@ export class DisplayComponent {
       byCat.get(cat.id)!.push(image);
     }
     
-    return Array.from(byCat.entries()).map(([id, images]) => ({
+    const result = Array.from(byCat.entries()).map(([id, images]) => ({
       category: this.categories().find(c => c.id === id)!,
       images
     })).filter(group => group.images.length > 0); // Only show categories with matching images
+    
+    console.log('🔍 Resultado da busca:', result.length, 'categorias encontradas');
+    return result;
   });
 
   readonly cellIds = computed(() => this.grid().cells.map((_, i) => `cell-${i}`));

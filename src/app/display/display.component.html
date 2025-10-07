@@ -65,8 +65,8 @@
     <div class="search-container" style="margin-bottom: 1rem;">
       <input 
         type="text" 
-        [ngModel]="searchTerm()" 
-        (ngModelChange)="searchTerm.set($event)"
+        [value]="searchTerm()" 
+        (input)="updateSearchTerm($any($event.target).value)"
         placeholder="🔍 Buscar sabores..." 
         class="search-input"
         style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 0.9rem;"

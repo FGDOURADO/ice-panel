@@ -173,7 +173,15 @@ export class VisorComponent implements OnInit, OnDestroy {
           // Recarregar a página para mostrar as mudanças
           setTimeout(() => {
             console.log('📺 Recarregando visor na rota atual:', window.location.pathname);
-            window.location.reload();
+            
+            // Verificar se estamos na rota do visor
+            if (window.location.pathname.includes('/visor')) {
+              console.log('📺 Mantendo rota do visor, recarregando...');
+              window.location.reload();
+            } else {
+              console.log('📺 Redirecionando para visor...');
+              window.location.href = '/ice-panel/visor';
+            }
           }, 500);
         } else {
           console.log('📺 Nenhuma mudança detectada. Visor não será atualizado.');

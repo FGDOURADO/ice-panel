@@ -154,24 +154,6 @@
       Nenhuma imagem cadastrada
     </div>
   </section>
-
-  <section class="section">
-    <h2>⚙️ Configurações de Layout</h2>
-    <div class="form-group">
-      <label>URL da Logo</label>
-      <input type="url" [ngModel]="flavorService.settings().logoImageUrl" (ngModelChange)="flavorService.setLogoImageUrl($event)" placeholder="https://exemplo.com/logo.png" />
-    </div>
-    <div class="form-group">
-      <label>Cor dos Títulos</label>
-      <input type="color" [ngModel]="flavorService.settings().titleColor" (ngModelChange)="flavorService.setTitleColor($event)" />
-    </div>
-    <div class="form-group">
-      <label>
-        <input type="checkbox" [ngModel]="flavorService.settings().showGridLines" (ngModelChange)="flavorService.setShowGridLines($event)" />
-        Mostrar linhas do grid no Visor
-      </label>
-    </div>
-  </section>
 </div>
 
 

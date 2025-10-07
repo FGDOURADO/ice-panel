@@ -1,43 +1,77 @@
-/* Admin Component Styles - Professional Gelateria */
+/* Admin Component Styles - Elegant & Professional */
 .admin {
-  padding: 3rem 2rem;
-  max-width: 1400px;
+  padding: var(--space-12) var(--space-8);
+  max-width: 1600px;
   margin: 0 auto;
-  background: #f7fafc;
+  background: transparent;
   min-height: 100vh;
 }
 
 .admin h1 {
-  color: #1a202c;
-  font-size: 2rem;
-  font-weight: 500;
+  color: var(--gray-900);
+  font-size: 2.5rem;
+  font-weight: 700;
   text-align: center;
-  margin-bottom: 3rem;
-  padding: 2rem;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: var(--space-12);
+  padding: var(--space-10);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
   letter-spacing: -0.025em;
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+}
+
+.admin h1::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
 }
 
 .section {
-  margin-bottom: 3rem;
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 2.5rem;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: var(--space-12);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+  border-radius: var(--radius-xl);
+  padding: var(--space-10);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.section:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
 }
 
 .section h2 {
-  color: #2d3748;
-  font-size: 1.5rem;
-  font-weight: 500;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #e2e8f0;
+  color: var(--gray-900);
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-4);
+  border-bottom: 3px solid var(--primary-200);
   letter-spacing: -0.025em;
+  position: relative;
+}
+
+.section h2::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
+  border-radius: var(--radius);
 }
 
 .form-group {
@@ -120,6 +154,101 @@
 
 .btn-primary:hover {
   background: #2c5aa0;
+}
+
+/* Elegant Color Picker */
+input[type="color"] {
+  width: 60px !important;
+  height: 50px !important;
+  border: 3px solid var(--gray-200) !important;
+  border-radius: var(--radius-lg) !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+input[type="color"]:hover {
+  border-color: var(--primary-500) !important;
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+}
+
+input[type="color"]:focus {
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1) !important;
+  transform: scale(1.05);
+}
+
+/* Elegant Checkbox */
+input[type="checkbox"] {
+  width: 20px !important;
+  height: 20px !important;
+  border: 2px solid var(--gray-300) !important;
+  border-radius: var(--radius-sm) !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  appearance: none;
+  position: relative;
+}
+
+input[type="checkbox"]:checked {
+  background: var(--primary-500) !important;
+  border-color: var(--primary-500) !important;
+}
+
+input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+input[type="checkbox"]:hover {
+  border-color: var(--primary-400) !important;
+  transform: scale(1.1);
+}
+
+input[type="checkbox"]:focus {
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1) !important;
+}
+
+/* Color Picker Container */
+.color-picker-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.color-picker-container label {
+  margin-bottom: 0 !important;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+/* Checkbox Container */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.checkbox-container label {
+  margin-bottom: 0 !important;
+  font-weight: 600;
+  color: var(--gray-700);
+  cursor: pointer;
 }
 
 /* Botões dentro de form-group precisam de espaçamento */

@@ -1,10 +1,10 @@
-/* Visor Component Styles - Professional Gelateria */
+/* Visor Component Styles - Elegant & Professional */
 .visor {
-  padding: 2rem;
+  padding: var(--space-8);
   width: 100vw;
   height: 100vh;
   margin: 0;
-  background: #ffffff;
+  background: linear-gradient(135deg, var(--gray-50) 0%, var(--primary-50) 100%);
   overflow: hidden;
   position: fixed;
   top: 0;

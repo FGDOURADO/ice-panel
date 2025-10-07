@@ -22,18 +22,15 @@
       </div>
     </div>
 
-    <div class="form-group">
-      <label>Cor dos Títulos</label>
+    <div class="color-picker-container">
+      <label>🎨 Cor dos Títulos</label>
       <input type="color" [(ngModel)]="titleColor" />
-      <div style="margin-top: 0.75rem;">
-        <button class="btn btn-primary" (click)="updateTitleColor()">🎨 Salvar Cor</button>
-      </div>
+      <button class="btn btn-primary" (click)="updateTitleColor()">💾 Salvar Cor</button>
     </div>
 
-    <div class="form-group">
-      <label>Mostrar Linhas do Grid</label>
-      <input type="checkbox" [(ngModel)]="showGridLines" (change)="updateShowGridLines()" />
-      <span style="margin-left: 0.5rem;">Exibir linhas do grid no visor</span>
+    <div class="checkbox-container">
+      <input type="checkbox" [(ngModel)]="showGridLines" (change)="updateShowGridLines()" id="showGridLines" />
+      <label for="showGridLines">📐 Exibir linhas do grid no visor</label>
     </div>
   </section>
 

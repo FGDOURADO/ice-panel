@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, HostListener } from '@angular/core';
+import { Component, computed, inject, signal, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FlavorService, Flavor, Title, Image } from '../services/flavor.service';
@@ -11,7 +11,7 @@ import { StaticImagesService, StaticImage } from '../services/static-images.serv
   templateUrl: './visor.component.html',
   styleUrls: ['./visor.component.css']
 })
-export class VisorComponent {
+export class VisorComponent implements OnInit, OnDestroy {
   private readonly flavorService = inject(FlavorService);
   private readonly staticImagesService = inject(StaticImagesService);
 
@@ -28,6 +28,14 @@ export class VisorComponent {
   readonly enableScroll = signal(false);
   private hideMenuTimeout: any;
   private hideScrollTimeout: any;
+
+  // Auto-refresh state
+  readonly lastRefresh = signal(new Date());
+  private refreshInterval: any;
+  private lastGridState: string = '';
+  private lastHeaderGridState: string = '';
+  private lastImagesState: string = '';
+  private lastSettingsState: string = '';
 
   // TV Mode detection
   isTVMode(): boolean {
@@ -115,7 +123,83 @@ export class VisorComponent {
     this.resetScrollTimeout();
   }
 
+  // Auto-refresh lifecycle
+  ngOnInit(): void {
+    this.initializeStates();
+    this.startAutoRefresh();
+  }
 
+  ngOnDestroy(): void {
+    this.stopAutoRefresh();
+    if (this.hideMenuTimeout) {
+      clearTimeout(this.hideMenuTimeout);
+    }
+    if (this.hideScrollTimeout) {
+      clearTimeout(this.hideScrollTimeout);
+    }
+  }
+
+  // Initialize state tracking
+  private initializeStates(): void {
+    this.lastGridState = JSON.stringify(this.grid());
+    this.lastHeaderGridState = JSON.stringify(this.headerGrid());
+    this.lastImagesState = JSON.stringify(this.images());
+    this.lastSettingsState = JSON.stringify(this.settings());
+  }
+
+  // Start auto-refresh every 1 minute
+  private startAutoRefresh(): void {
+    this.refreshInterval = setInterval(() => {
+      this.refreshData();
+    }, 60000); // 1 minute = 60000ms
+  }
+
+  // Stop auto-refresh
+  private stopAutoRefresh(): void {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+      this.refreshInterval = null;
+    }
+  }
+
+  // Check for changes and refresh if needed
+  private refreshData(): void {
+    const currentGridState = JSON.stringify(this.grid());
+    const currentHeaderGridState = JSON.stringify(this.headerGrid());
+    const currentImagesState = JSON.stringify(this.images());
+    const currentSettingsState = JSON.stringify(this.settings());
+
+    // Check if any data has changed
+    const hasChanges = 
+      currentGridState !== this.lastGridState ||
+      currentHeaderGridState !== this.lastHeaderGridState ||
+      currentImagesState !== this.lastImagesState ||
+      currentSettingsState !== this.lastSettingsState;
+
+    // Always update timestamp for debugging
+    this.lastRefresh.set(new Date());
+
+    if (hasChanges) {
+      // Update states
+      this.lastGridState = currentGridState;
+      this.lastHeaderGridState = currentHeaderGridState;
+      this.lastImagesState = currentImagesState;
+      this.lastSettingsState = currentSettingsState;
+
+      // Force re-render by updating signals
+      this.flavorService.forceSave();
+      this.staticImagesService.forceSave();
+      
+      console.log('🔄 Visor atualizado automaticamente:', new Date().toLocaleTimeString());
+    } else {
+      console.log('⏰ Verificação de mudanças - sem alterações:', new Date().toLocaleTimeString());
+    }
+  }
+
+  // Manual refresh method
+  forceRefresh(): void {
+    this.refreshData();
+  }
 }
 
 

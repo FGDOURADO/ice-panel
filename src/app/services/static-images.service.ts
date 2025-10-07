@@ -74,4 +74,9 @@ export class StaticImagesService {
       ? crypto.randomUUID()
       : Math.random().toString(36).substring(2, 15);
   }
+
+  // Public method to force save (for auto-refresh)
+  public forceSave(): void {
+    this.save();
+  }
 }

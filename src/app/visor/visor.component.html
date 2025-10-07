@@ -6,7 +6,9 @@
   <a routerLink="/display" style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: #4a5568; border-radius: 4px;">🎯 Display</a>
   <a routerLink="/visor" style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: #38a169; border-radius: 4px;">📺 Visor</a>
   <button (click)="toggleFullscreen()" style="background: #38a169; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">📺 Tela Cheia</button>
+  <button (click)="forceRefresh()" style="background: #667eea; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">🔄 Atualizar</button>
   <span style="margin-left: auto; font-size: 0.9rem; opacity: 0.8;">🍦 Painel de Gelateria</span>
+  <span style="font-size: 0.8rem; opacity: 0.7; margin-left: 1rem;">🔄 Auto-refresh: {{ lastRefresh() | date:'dd/MM HH:mm:ss' }}</span>
 </nav>
 
 <div class="visor" 

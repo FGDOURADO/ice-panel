@@ -46,17 +46,20 @@ export class AdminComponent {
     if (!name) return;
     this.flavorService.addCategory(name);
     this.newCategoryName = '';
+    this.notifyVisorUpdate();
   }
 
   renameCategory(category: FlavorCategory, name: string): void {
     const next = name.trim();
     if (!next) return;
     this.flavorService.renameCategory(category.id, next);
+    this.notifyVisorUpdate();
   }
 
   removeCategory(category: FlavorCategory): void {
     if (confirm(`Remover categoria "${category.name}" e suas imagens?`)) {
       this.flavorService.removeCategory(category.id);
+      this.notifyVisorUpdate();
     }
   }
 
@@ -67,6 +70,7 @@ export class AdminComponent {
     if (!name) return;
     this.flavorService.addTitle(name);
     this.newTitleName = '';
+    this.notifyVisorUpdate();
   }
 
   onTitleNameInput(titleId: string, value: string): void {
@@ -78,11 +82,13 @@ export class AdminComponent {
     const next = (pending ?? title.name).trim();
     if (!next || next === title.name) return;
     this.flavorService.renameTitle(title.id, next);
+    this.notifyVisorUpdate();
   }
 
   removeTitle(title: Title): void {
     if (confirm(`Remover título "${title.name}"?`)) {
       this.flavorService.removeTitle(title.id);
+      this.notifyVisorUpdate();
     }
   }
 
@@ -109,6 +115,7 @@ export class AdminComponent {
       this.newImageUrl = '';
       this.newImageCategoryId = '';
       
+      this.notifyVisorUpdate();
       alert('Imagem adicionada com sucesso!');
     } catch (error) {
       console.error('Error adding image:', error);
@@ -125,10 +132,12 @@ export class AdminComponent {
     const next = (pending ?? image.name).trim();
     if (!next || next === image.name) return;
     this.flavorService.renameImage(image.id, next);
+    this.notifyVisorUpdate();
   }
 
   moveImage(image: Image, categoryId: string): void {
     this.flavorService.moveImageToCategory(image.id, categoryId);
+    this.notifyVisorUpdate();
   }
 
   removeImage(image: any): void {
@@ -137,6 +146,7 @@ export class AdminComponent {
       this.staticImagesService.removeImage(image.id);
       // Remove do grid se estiver posicionada
       this.flavorService.removeImage(image.id);
+      this.notifyVisorUpdate();
     }
   }
 
@@ -181,6 +191,7 @@ export class AdminComponent {
     const newName = this.editCategoryName().trim();
     if (newName) {
       this.flavorService.updateCategory(categoryId, newName);
+      this.notifyVisorUpdate();
     }
     this.cancelCategoryEdit();
   }
@@ -189,6 +200,7 @@ export class AdminComponent {
     const newName = this.editTitleName().trim();
     if (newName) {
       this.flavorService.updateTitle(titleId, newName);
+      this.notifyVisorUpdate();
     }
     this.cancelTitleEdit();
   }
@@ -200,6 +212,7 @@ export class AdminComponent {
     
     if (newName && newUrl && newCategory) {
       this.staticImagesService.updateImage(imageId, newName, newUrl, newCategory);
+      this.notifyVisorUpdate();
     }
     this.cancelImageEdit();
   }
@@ -219,6 +232,24 @@ export class AdminComponent {
     this.editImageName.set('');
     this.editImageUrl.set('');
     this.editImageCategory.set('');
+  }
+
+  // Notificar visor sobre mudanças
+  private notifyVisorUpdate(): void {
+    // Forçar salvamento dos dados
+    this.flavorService.forceSave();
+    this.staticImagesService.forceSave();
+    
+    // Notificar visor via BroadcastChannel
+    const channel = new BroadcastChannel('ice-panel-updates');
+    channel.postMessage({
+      type: 'data-saved',
+      timestamp: new Date().toISOString(),
+      source: 'admin'
+    });
+    channel.close();
+    
+    console.log('⚙️ Admin: Mudanças salvas e visor notificado:', new Date().toLocaleTimeString());
   }
 }
 

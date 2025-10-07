@@ -188,8 +188,10 @@ export class AdminComponent {
   }
 
   saveCategoryEdit(categoryId: string): void {
+    console.log('⚙️ Admin: saveCategoryEdit chamado para:', categoryId);
     const newName = this.editCategoryName().trim();
     if (newName) {
+      console.log('⚙️ Admin: Atualizando categoria:', newName);
       this.flavorService.updateCategory(categoryId, newName);
       this.notifyVisorUpdate();
     }
@@ -197,8 +199,10 @@ export class AdminComponent {
   }
 
   saveTitleEdit(titleId: string): void {
+    console.log('⚙️ Admin: saveTitleEdit chamado para:', titleId);
     const newName = this.editTitleName().trim();
     if (newName) {
+      console.log('⚙️ Admin: Atualizando título:', newName);
       this.flavorService.updateTitle(titleId, newName);
       this.notifyVisorUpdate();
     }
@@ -206,11 +210,13 @@ export class AdminComponent {
   }
 
   saveImageEdit(imageId: string): void {
+    console.log('⚙️ Admin: saveImageEdit chamado para:', imageId);
     const newName = this.editImageName().trim();
     const newUrl = this.editImageUrl().trim();
     const newCategory = this.editImageCategory();
     
     if (newName && newUrl && newCategory) {
+      console.log('⚙️ Admin: Atualizando imagem:', newName);
       this.staticImagesService.updateImage(imageId, newName, newUrl, newCategory);
       this.notifyVisorUpdate();
     }
@@ -236,9 +242,13 @@ export class AdminComponent {
 
   // Notificar visor sobre mudanças
   private notifyVisorUpdate(): void {
+    console.log('⚙️ Admin: notifyVisorUpdate() chamado');
+    
     // Forçar salvamento dos dados
     this.flavorService.forceSave();
     this.staticImagesService.forceSave();
+    
+    console.log('⚙️ Admin: Dados salvos, enviando notificação...');
     
     // Notificar visor via BroadcastChannel
     const channel = new BroadcastChannel('ice-panel-updates');

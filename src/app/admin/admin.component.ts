@@ -2,7 +2,7 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FlavorService, FlavorCategory, Flavor, Title, Image } from '../services/flavor.service';
-import { StaticImagesService, StaticImage } from '../services/static-images.service';
+import { StaticImagesService } from '../services/static-images.service';
 
 @Component({
   selector: 'app-admin',
@@ -28,6 +28,16 @@ export class AdminComponent {
   newImageUrl = '';
   readonly editTitleNames = signal<Record<string, string>>({});
   readonly editImageNames = signal<Record<string, string>>({});
+
+  // Editing state
+  editingCategory = signal<string | null>(null);
+  editingTitle = signal<string | null>(null);
+  editingImage = signal<string | null>(null);
+  editCategoryName = signal<string>('');
+  editTitleName = signal<string>('');
+  editImageName = signal<string>('');
+  editImageUrl = signal<string>('');
+  editImageCategory = signal<string>('');
   constructor() {}
 
   addCategory(): void {
@@ -120,8 +130,11 @@ export class AdminComponent {
     this.flavorService.moveImageToCategory(image.id, categoryId);
   }
 
-  removeImage(image: Image): void {
+  removeImage(image: any): void {
     if (confirm(`Remover imagem "${image.name}"?`)) {
+      // Remove do StaticImagesService (dados reais)
+      this.staticImagesService.removeImage(image.id);
+      // Remove do grid se estiver posicionada
       this.flavorService.removeImage(image.id);
     }
   }
@@ -144,6 +157,68 @@ export class AdminComponent {
       images
     }));
   });
+
+  // Métodos para edição inline
+  startEditCategory(category: FlavorCategory): void {
+    this.editingCategory.set(category.id);
+    this.editCategoryName.set(category.name);
+  }
+
+  startEditTitle(title: Title): void {
+    this.editingTitle.set(title.id);
+    this.editTitleName.set(title.name);
+  }
+
+  startEditImage(image: any): void {
+    this.editingImage.set(image.id);
+    this.editImageName.set(image.name);
+    this.editImageUrl.set(image.url);
+    this.editImageCategory.set(image.categoryId);
+  }
+
+  saveCategoryEdit(categoryId: string): void {
+    const newName = this.editCategoryName().trim();
+    if (newName) {
+      this.flavorService.updateCategory(categoryId, newName);
+    }
+    this.cancelCategoryEdit();
+  }
+
+  saveTitleEdit(titleId: string): void {
+    const newName = this.editTitleName().trim();
+    if (newName) {
+      this.flavorService.updateTitle(titleId, newName);
+    }
+    this.cancelTitleEdit();
+  }
+
+  saveImageEdit(imageId: string): void {
+    const newName = this.editImageName().trim();
+    const newUrl = this.editImageUrl().trim();
+    const newCategory = this.editImageCategory();
+    
+    if (newName && newUrl && newCategory) {
+      this.staticImagesService.updateImage(imageId, newName, newUrl, newCategory);
+    }
+    this.cancelImageEdit();
+  }
+
+  cancelCategoryEdit(): void {
+    this.editingCategory.set(null);
+    this.editCategoryName.set('');
+  }
+
+  cancelTitleEdit(): void {
+    this.editingTitle.set(null);
+    this.editTitleName.set('');
+  }
+
+  cancelImageEdit(): void {
+    this.editingImage.set(null);
+    this.editImageName.set('');
+    this.editImageUrl.set('');
+    this.editImageCategory.set('');
+  }
 }
 
 

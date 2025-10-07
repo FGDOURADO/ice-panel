@@ -1,9 +1,9 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CdkDrag, CdkDropList, DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { FlavorService, Flavor, FlavorCategory, Title, Image } from '../services/flavor.service';
-import { StaticImagesService, StaticImage } from '../services/static-images.service';
+import { FlavorService } from '../services/flavor.service';
+import { StaticImagesService } from '../services/static-images.service';
 
 @Component({
   selector: 'app-display',
@@ -17,56 +17,69 @@ export class DisplayComponent {
   private readonly staticImagesService = inject(StaticImagesService);
 
   readonly grid = this.flavorService.grid;
-  readonly flavors = this.flavorService.flavors;
+  readonly headerGrid = this.flavorService.headerGrid;
+  readonly images = this.staticImagesService.images;
   readonly categories = this.flavorService.categories;
   readonly titles = this.flavorService.titles;
-  readonly images = this.staticImagesService.images;
-  readonly settings = this.flavorService.settings;
-  readonly headerGrid = this.flavorService.headerGrid;
+
 
   get columns(): number { return this.grid().columns; }
   get rows(): number { return this.grid().rows; }
 
   set columns(v: number) {
-    const cols = Number(v);
-    this.flavorService.setGridSize(cols, this.rows);
-    this.flavorService.setHeaderGridSize(cols, 1);
+    this.flavorService.setGridColumns(v);
+    this.flavorService.setHeaderGridSize(v, 1);
   }
-  set rows(v: number) { this.flavorService.setGridSize(this.columns, Number(v)); }
 
-  readonly placedFlavorIds = computed(() => new Set(this.grid().cells.filter(Boolean) as string[]));
-  readonly placedTitleIds = computed(() => new Set(this.headerGrid().cells.filter(Boolean) as string[]));
-  readonly availableTitles = computed<Title[]>(() => this.titles().filter(t => !this.placedTitleIds().has(t.id)));
-  readonly availableImages = computed<Image[]>(() => this.images().filter(i => !this.placedFlavorIds().has(i.id)));
+  set rows(v: number) {
+    this.flavorService.setGridRows(v);
+  }
 
   readonly imagesByCategory = computed(() => {
-    const byCat = new Map<string, Image[]>();
-    const available = this.availableImages();
-    for (const i of available) {
-      const cat = this.categories().find(c => c.id === i.categoryId);
+    const byCat = new Map<string, any[]>();
+    for (const image of this.images()) {
+      const cat = this.categories().find(c => c.id === image.categoryId);
       if (!cat) continue;
       if (!byCat.has(cat.id)) byCat.set(cat.id, []);
-      byCat.get(cat.id)!.push(i);
+      byCat.get(cat.id)!.push(image);
     }
     return Array.from(byCat.entries()).map(([id, images]) => ({
       category: this.categories().find(c => c.id === id)!,
       images
     }));
   });
+
+  // Get available images (not used in grid)
+  readonly availableImages = computed(() => {
+    const usedImageIds = new Set(this.grid().cells.filter(id => id !== null));
+    return this.images().filter(image => !usedImageIds.has(image.id));
+  });
+
+  // Get available images by category (not used in grid)
+  readonly availableImagesByCategory = computed(() => {
+    const usedImageIds = new Set(this.grid().cells.filter(id => id !== null));
+    const byCat = new Map<string, any[]>();
+    
+    for (const image of this.images()) {
+      if (usedImageIds.has(image.id)) continue; // Skip used images
+      
+      const cat = this.categories().find(c => c.id === image.categoryId);
+      if (!cat) continue;
+      if (!byCat.has(cat.id)) byCat.set(cat.id, []);
+      byCat.get(cat.id)!.push(image);
+    }
+    
+    return Array.from(byCat.entries()).map(([id, images]) => ({
+      category: this.categories().find(c => c.id === id)!,
+      images
+    }));
+  });
+
   readonly cellIds = computed(() => this.grid().cells.map((_, i) => `cell-${i}`));
   readonly connectedIds = computed(() => ['image-palette', ...this.cellIds()]);
   readonly headerCellIds = computed(() => this.headerGrid().cells.map((_, i) => `header-cell-${i}`));
-  readonly headerConnectedIds = computed(() => ['cat-palette', ...this.headerCellIds()]);
-
-
-  nameFor(id: string | null): string {
-    if (!id) return '';
-    // Check if it's an image first
-    const image = this.images().find(i => i.id === id);
-    if (image) return image.name;
-    // Fallback to flavors for backward compatibility
-    return this.flavors().find(f => f.id === id)?.name ?? '';
-  }
+  readonly headerConnectedIds = computed(() => ['title-palette', ...this.headerCellIds()]);
+  readonly availableTitles = computed(() => this.titles().filter(t => !this.headerGrid().cells.includes(t.id)));
 
   dropToCell(event: CdkDragDrop<number, any, any>, cellIndex: number): void {
     const itemId = event.item.data as string | null;
@@ -74,12 +87,13 @@ export class DisplayComponent {
 
     if (itemId == null && fromCellIndex == null) return;
 
-    if (fromCellIndex != null) {
-      // came from another cell: swap
+    // Se está movendo dentro do grid
+    if (fromCellIndex != null && fromCellIndex !== cellIndex) {
       this.flavorService.swapCells(fromCellIndex, cellIndex);
       return;
     }
 
+    // Se está colocando um item novo
     if (itemId) {
       this.flavorService.placeFlavorAtCell(cellIndex, itemId);
     }
@@ -89,24 +103,21 @@ export class DisplayComponent {
     this.flavorService.placeFlavorAtCell(index, null);
   }
 
-  clearGrid(): void {
-    if (confirm('Limpar todas as células do grid (sabores e títulos)?')) {
-      this.flavorService.clearGrid();
-      this.flavorService.clearHeaderGrid();
-    }
-  }
 
-
-  // Header titles helpers
+  // Métodos para títulos
   dropHeaderToCell(event: CdkDragDrop<number, any, any>, cellIndex: number): void {
     const fromIdx = typeof event.previousContainer.data === 'number' ? (event.previousContainer.data as number) : null;
-    const draggedCatId = event.item.data as string | null;
-    if (fromIdx != null) {
+    const draggedTitleId = event.item.data as string | null;
+    
+    // Se está movendo dentro do grid de títulos
+    if (fromIdx != null && fromIdx !== cellIndex) {
       this.flavorService.swapHeaderCells(fromIdx, cellIndex);
       return;
     }
-    if (draggedCatId) {
-      this.flavorService.placeCategoryAtHeaderCell(cellIndex, draggedCatId);
+    
+    // Se está colocando um título novo
+    if (draggedTitleId) {
+      this.flavorService.placeCategoryAtHeaderCell(cellIndex, draggedTitleId);
     }
   }
 
@@ -114,18 +125,14 @@ export class DisplayComponent {
     this.flavorService.placeCategoryAtHeaderCell(index, null);
   }
 
-  clearHeaderGrid(): void {
-    if (confirm('Limpar todos os títulos?')) this.flavorService.clearHeaderGrid();
-  }
-
-  categoryName(categoryId: string | null): string {
-    if (!categoryId) return '';
-    return this.categories().find(c => c.id === categoryId)?.name ?? '';
-  }
-
   titleName(titleId: string | null): string {
     if (!titleId) return '';
     return this.titles().find(t => t.id === titleId)?.name ?? '';
+  }
+
+  nameFor(id: string | null): string {
+    if (!id) return '';
+    return this.images().find(i => i.id === id)?.name ?? '';
   }
 
   imageName(imageId: string | null): string {
@@ -137,6 +144,12 @@ export class DisplayComponent {
     if (!imageId) return '';
     return this.images().find(i => i.id === imageId)?.url ?? '';
   }
+
+  // Clear grid with confirmation
+  clearGrid(): void {
+    if (confirm('Limpar todas as células do grid (sabores e títulos)?')) {
+      this.flavorService.clearGrid();
+      this.flavorService.clearHeaderGrid();
+    }
+  }
 }
-
-

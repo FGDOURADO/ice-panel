@@ -1,79 +1,143 @@
-<div class="admin">
-  <h2>Gerenciar Sabores</h2>
+<!-- Menu de Navegação Temporário -->
+<nav style="position: fixed; top: 0; left: 0; right: 0; background: #2d3748; color: white; padding: 1rem; z-index: 10000; display: flex; gap: 1rem; align-items: center;">
+  <a href="/admin" style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: #38a169; border-radius: 4px;">Admin</a>
+  <a href="/display" style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: #4a5568; border-radius: 4px;">Display</a>
+  <a href="/visor" style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: #4a5568; border-radius: 4px;">Visor</a>
+  <span style="margin-left: auto; font-size: 0.9rem; opacity: 0.8;">🍦 Painel de Gelateria</span>
+</nav>
 
-  <section class="categories">
-    <h3>Categorias</h3>
-    <div class="add-row">
-      <input [(ngModel)]="newCategoryName" placeholder="Nova categoria" />
-      <button (click)="addCategory()">Adicionar</button>
+<div class="admin" style="margin-top: 4rem;">
+  <h1>🍦 Painel Administrativo</h1>
+
+  <section class="section">
+    <h2>📂 Categorias</h2>
+    <div class="form-group">
+      <label>Nova Categoria</label>
+      <input [(ngModel)]="newCategoryName" placeholder="Digite o nome da categoria" />
+      <div style="margin-top: 0.75rem;">
+        <button class="btn btn-success" (click)="addCategory()">➕ Adicionar Categoria</button>
+      </div>
     </div>
 
-    <ul class="category-list">
-      <li *ngFor="let c of categories()">
-        <input [ngModel]="c.name" (ngModelChange)="renameCategory(c, $event)" />
-        <button class="danger" (click)="removeCategory(c)">Excluir</button>
-      </li>
-    </ul>
+    <div class="list">
+      <div class="list-item" *ngFor="let c of categories()">
+        <!-- Modo visualização -->
+        <span *ngIf="editingCategory() !== c.id">{{ c.name }}</span>
+        <!-- Modo edição -->
+        <div *ngIf="editingCategory() === c.id" class="edit-form">
+          <input [(ngModel)]="editCategoryName" placeholder="Nome da categoria" class="edit-input" />
+        </div>
+        <div class="actions">
+          <!-- Botões modo visualização -->
+          <button *ngIf="editingCategory() !== c.id" class="btn-edit" (click)="startEditCategory(c)">✏️ Editar</button>
+          <button *ngIf="editingCategory() !== c.id" class="btn-delete" (click)="removeCategory(c)">🗑️ Excluir</button>
+          <!-- Botões modo edição -->
+          <button *ngIf="editingCategory() === c.id" class="btn-success" (click)="saveCategoryEdit(c.id)">💾 Salvar</button>
+          <button *ngIf="editingCategory() === c.id" class="btn-danger" (click)="cancelCategoryEdit()">❌ Cancelar</button>
+        </div>
+      </div>
+      <div class="empty-state" *ngIf="categories().length === 0">
+        Nenhuma categoria cadastrada
+      </div>
+    </div>
   </section>
 
 
-  <section class="titles">
-    <h3>Títulos</h3>
-    <div class="add-row">
-      <input [(ngModel)]="newTitleName" placeholder="Novo título" />
-      <button (click)="addTitle()">Adicionar</button>
+  <section class="section">
+    <h2>🏷️ Títulos</h2>
+    <div class="form-group">
+      <label>Novo Título</label>
+      <input [(ngModel)]="newTitleName" placeholder="Digite o nome do título" />
+      <div style="margin-top: 0.75rem;">
+        <button class="btn btn-success" (click)="addTitle()">➕ Adicionar Título</button>
+      </div>
     </div>
 
-    <ul class="title-list">
-      <li *ngFor="let t of titles()">
-        <input [ngModel]="editTitleNames()[t.id] || t.name" (ngModelChange)="onTitleNameInput(t.id, $event)" (blur)="commitTitleName(t)" (keyup.enter)="commitTitleName(t)" />
-        <button class="danger" (click)="removeTitle(t)">Excluir</button>
-      </li>
-    </ul>
+    <div class="list">
+      <div class="list-item" *ngFor="let t of titles()">
+        <!-- Modo visualização -->
+        <span *ngIf="editingTitle() !== t.id">{{ t.name }}</span>
+        <!-- Modo edição -->
+        <div *ngIf="editingTitle() === t.id" class="edit-form">
+          <input [(ngModel)]="editTitleName" placeholder="Nome do título" class="edit-input" />
+        </div>
+        <div class="actions">
+          <!-- Botões modo visualização -->
+          <button *ngIf="editingTitle() !== t.id" class="btn-edit" (click)="startEditTitle(t)">✏️ Editar</button>
+          <button *ngIf="editingTitle() !== t.id" class="btn-delete" (click)="removeTitle(t)">🗑️ Excluir</button>
+          <!-- Botões modo edição -->
+          <button *ngIf="editingTitle() === t.id" class="btn-success" (click)="saveTitleEdit(t.id)">💾 Salvar</button>
+          <button *ngIf="editingTitle() === t.id" class="btn-danger" (click)="cancelTitleEdit()">❌ Cancelar</button>
+        </div>
+      </div>
+      <div class="empty-state" *ngIf="titles().length === 0">
+        Nenhum título cadastrado
+      </div>
+    </div>
   </section>
 
-  <section class="images">
-    <h3>Imagens</h3>
-    <div class="add-row">
-      <input [(ngModel)]="newImageName" placeholder="Nome da imagem" />
-      <input [(ngModel)]="newImageUrl" placeholder="URL da imagem (ex: /assets/images/sorvete.jpg)" />
+  <section class="section">
+    <h2>🖼️ Imagens</h2>
+    <div class="form-group">
+      <label>Nome da Imagem</label>
+      <input [(ngModel)]="newImageName" placeholder="Digite o nome da imagem" />
+    </div>
+    <div class="form-group">
+      <label>URL da Imagem</label>
+      <input [(ngModel)]="newImageUrl" placeholder="https://exemplo.com/imagem.jpg" />
+    </div>
+    <div class="form-group">
+      <label>Categoria</label>
       <select [(ngModel)]="newImageCategoryId">
         <option value="">Selecione uma categoria</option>
         <option *ngFor="let c of categories()" [ngValue]="c.id">{{ c.name }}</option>
       </select>
-      <button (click)="addImage()">Adicionar</button>
     </div>
+    <button class="btn btn-success" (click)="addImage()">➕ Adicionar Imagem</button>
 
-    <div class="cat-group" *ngFor="let group of imagesByCategory()">
-      <h4 class="cat-title">{{ group.category.name }}</h4>
-      <ul class="image-list">
-        <li *ngFor="let i of group.images">
-          <div class="image-preview">
-            <img [src]="i.url" [alt]="i.name" style="max-width: 60px; max-height: 60px; object-fit: cover;" />
-          </div>
-          <input [ngModel]="editImageNames()[i.id] || i.name" (ngModelChange)="onImageNameInput(i.id, $event)" (blur)="commitImageName(i)" (keyup.enter)="commitImageName(i)" placeholder="Nome" />
-          <select [ngModel]="i.categoryId" (ngModelChange)="moveImage(i, $event)">
+    <div class="images-grid" *ngFor="let group of imagesByCategory()">
+      <h3 class="cat-title">{{ group.category.name }}</h3>
+      <div class="image-item" *ngFor="let i of group.images">
+        <img [src]="i.url" [alt]="i.name" />
+        <!-- Modo visualização -->
+        <div *ngIf="editingImage() !== i.id">
+          <div class="image-name">{{ i.name }}</div>
+          <div class="image-category">{{ group.category.name }}</div>
+        </div>
+        <!-- Modo edição -->
+        <div *ngIf="editingImage() === i.id" class="edit-form">
+          <input [(ngModel)]="editImageName" placeholder="Nome da imagem" class="edit-input" />
+          <input [(ngModel)]="editImageUrl" placeholder="URL da imagem" class="edit-input" />
+          <select [(ngModel)]="editImageCategory" class="edit-select">
             <option *ngFor="let c of categories()" [ngValue]="c.id">{{ c.name }}</option>
           </select>
-          <button class="danger" (click)="removeImage(i)">Excluir</button>
-        </li>
-      </ul>
+        </div>
+        <div class="actions">
+          <!-- Botões modo visualização -->
+          <button *ngIf="editingImage() !== i.id" class="btn-edit" (click)="startEditImage(i)">✏️ Editar</button>
+          <button *ngIf="editingImage() !== i.id" class="btn-delete" (click)="removeImage(i)">🗑️ Excluir</button>
+          <!-- Botões modo edição -->
+          <button *ngIf="editingImage() === i.id" class="btn-success" (click)="saveImageEdit(i.id)">💾 Salvar</button>
+          <button *ngIf="editingImage() === i.id" class="btn-danger" (click)="cancelImageEdit()">❌ Cancelar</button>
+        </div>
+      </div>
+    </div>
+    <div class="empty-state" *ngIf="images().length === 0">
+      Nenhuma imagem cadastrada
     </div>
   </section>
 
-  <section class="layout-settings">
-    <h3>Configurações de Layout</h3>
-    <div class="add-row">
-      <label>Imagem da logo (URL)
-        <input type="url" [ngModel]="flavorService.settings().logoImageUrl" (ngModelChange)="flavorService.setLogoImageUrl($event)" placeholder="https://.../logo-image.png" />
-      </label>
+  <section class="section">
+    <h2>⚙️ Configurações de Layout</h2>
+    <div class="form-group">
+      <label>URL da Logo</label>
+      <input type="url" [ngModel]="flavorService.settings().logoImageUrl" (ngModelChange)="flavorService.setLogoImageUrl($event)" placeholder="https://exemplo.com/logo.png" />
     </div>
-    <div class="add-row">
-      <label>Cor dos títulos
-        <input type="color" [ngModel]="flavorService.settings().titleColor" (ngModelChange)="flavorService.setTitleColor($event)" />
-      </label>
+    <div class="form-group">
+      <label>Cor dos Títulos</label>
+      <input type="color" [ngModel]="flavorService.settings().titleColor" (ngModelChange)="flavorService.setTitleColor($event)" />
     </div>
-    <div class="add-row">
+    <div class="form-group">
       <label>
         <input type="checkbox" [ngModel]="flavorService.settings().showGridLines" (ngModelChange)="flavorService.setShowGridLines($event)" />
         Mostrar linhas do grid no Visor

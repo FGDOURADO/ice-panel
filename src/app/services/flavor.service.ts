@@ -1,6 +1,5 @@
 import { Injectable, signal, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { FirebaseService } from './firebase.service';
 
 export type FlavorCategory = {
   id: string;
@@ -42,7 +41,6 @@ export class FlavorService {
   private static readonly STORAGE_KEY = 'ice-panel-data-v1';
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
-  private readonly firebaseService = inject(FirebaseService);
 
   // signals for reactive state
   readonly categories = signal<FlavorCategory[]>([]);
@@ -55,22 +53,22 @@ export class FlavorService {
 
   constructor() {
     this.load();
-    this.loadImagesFromFirebase();
+    this.loadImagesFromStorage();
   }
 
-  async loadImagesFromFirebase(): Promise<void> {
+  async loadImagesFromStorage(): Promise<void> {
     if (!this.isBrowser) return;
     
     try {
-      console.log('Loading images from Firebase...');
-      const firebaseImages = await this.firebaseService.getImages();
-      console.log('Firebase images loaded:', firebaseImages);
-      
-      // Update the images signal with Firebase data
-      this.images.set(firebaseImages);
-      console.log('Images signal updated');
+      console.log('Loading images from localStorage...');
+      const stored = localStorage.getItem(FlavorService.STORAGE_KEY);
+      if (stored) {
+        const data = JSON.parse(stored);
+        this.images.set(data.images || []);
+        console.log('Images loaded from localStorage');
+      }
     } catch (error) {
-      console.error('Error loading images from Firebase:', error);
+      console.error('Error loading images from storage:', error);
     }
   }
 
@@ -82,6 +80,11 @@ export class FlavorService {
 
   renameCategory(categoryId: string, name: string): void {
     this.categories.update((prev) => prev.map((c) => (c.id === categoryId ? { ...c, name } : c)));
+    this.save();
+  }
+
+  updateCategory(id: string, newName: string): void {
+    this.categories.update((prev) => prev.map((c) => (c.id === id ? { ...c, name: newName } : c)));
     this.save();
   }
 
@@ -137,6 +140,16 @@ export class FlavorService {
     this.save();
   }
 
+  setGridColumns(columns: number): void {
+    const currentGrid = this.grid();
+    this.setGridSize(columns, currentGrid.rows);
+  }
+
+  setGridRows(rows: number): void {
+    const currentGrid = this.grid();
+    this.setGridSize(currentGrid.columns, rows);
+  }
+
   placeFlavorAtCell(cellIndex: number, flavorId: string | null): void {
     this.grid.update((g) => {
       const cells = g.cells.slice();
@@ -144,6 +157,17 @@ export class FlavorService {
       return { ...g, cells };
     });
     this.save();
+  }
+
+  // Check if a flavor is already used in the grid
+  isFlavorUsed(flavorId: string): boolean {
+    return this.grid().cells.includes(flavorId);
+  }
+
+  // Get available flavors (not used in grid)
+  getAvailableFlavors(): Flavor[] {
+    const usedFlavorIds = new Set(this.grid().cells.filter(id => id !== null));
+    return this.flavors().filter(flavor => !usedFlavorIds.has(flavor.id));
   }
 
   swapCells(a: number, b: number): void {
@@ -202,6 +226,11 @@ export class FlavorService {
 
   renameTitle(titleId: string, name: string): void {
     this.titles.update((prev) => prev.map((t) => (t.id === titleId ? { ...t, name } : t)));
+    this.save();
+  }
+
+  updateTitle(id: string, newName: string): void {
+    this.titles.update((prev) => prev.map((t) => (t.id === id ? { ...t, name: newName } : t)));
     this.save();
   }
 
@@ -349,6 +378,11 @@ export class FlavorService {
 
   setShowGridLines(show: boolean): void {
     this.settings.update((s) => ({ ...s, showGridLines: show }));
+    this.save();
+  }
+
+  // Método público para forçar salvamento
+  public forceSave(): void {
     this.save();
   }
 }

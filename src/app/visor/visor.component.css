@@ -1,8 +1,135 @@
+/* Visor Component Styles - Professional Gelateria */
 .visor {
-  background: #111;
-  color: #fff;
+  padding: 2rem;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  background: #ffffff;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
 }
-.label {
+
+/* TV Mode - Otimizado para TV Android */
+.visor.tv-mode {
+  padding: 3rem;
+  font-size: 1.2rem;
+}
+
+.visor.tv-mode .header-cell {
+  min-height: 6rem;
+  font-size: 2rem;
   font-weight: 600;
 }
 
+.visor.tv-mode .cell {
+  min-height: 10rem;
+  font-size: 1.8rem;
+}
+
+.visor.tv-mode .cell img {
+  max-width: 95%;
+  max-height: 95%;
+}
+
+.visor.tv-mode .logo-section img {
+  max-height: 300px;
+  max-width: 600px;
+}
+
+/* Scroll condicional quando mouse se move */
+.visor.scroll-enabled {
+  overflow-y: auto;
+}
+
+/* Espaçador para scroll - sempre presente */
+.scroll-spacer {
+  height: 4rem;
+  background: transparent;
+  grid-column: 1 / -1;
+}
+
+.visor h1 {
+  color: #1a202c;
+  font-size: 3rem;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  letter-spacing: -0.025em;
+}
+
+.logo-section {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.logo-section img {
+  max-height: 200px;
+  max-width: 500px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-grid {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+  background: transparent;
+  border: none;
+}
+
+.header-cell {
+  border: none;
+  min-height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border-radius: 0;
+  font-weight: 500;
+  color: #2d3748;
+  font-size: 1.5rem;
+}
+
+.main-grid {
+  display: grid;
+  gap: 1rem;
+  min-height: 20rem;
+  padding: 2rem;
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.cell {
+  border: 1px solid #cbd5e0;
+  min-height: 8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 8px;
+  position: relative;
+}
+
+.cell img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.cell .flavor-name {
+  font-weight: 500;
+  color: #2d3748;
+  font-size: 1.5rem;
+  text-align: center;
+}

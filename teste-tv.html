@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste TV - Ice Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .success {
+            color: #28a745;
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .url {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 18px;
+            color: #007bff;
+            margin: 10px 0;
+        }
+        .steps {
+            text-align: left;
+            margin: 20px 0;
+        }
+        .step {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍦 Teste TV - Ice Panel</h1>
+        
+        <div class="success">✅ Servidor funcionando!</div>
+        
+        <div class="info">
+            <h3>📺 URLs para sua TV Android:</h3>
+            <div class="url">http://192.168.15.13:4200/visor?tv=true</div>
+        </div>
+        
+        <div class="steps">
+            <h3>🎯 Como testar:</h3>
+            <div class="step">
+                <strong>1.</strong> Abra o navegador na TV Android
+            </div>
+            <div class="step">
+                <strong>2.</strong> Digite a URL acima
+            </div>
+            <div class="step">
+                <strong>3.</strong> Pressione Enter
+            </div>
+            <div class="step">
+                <strong>4.</strong> Você deve ver o visor otimizado para TV!
+            </div>
+        </div>
+        
+        <div class="info">
+            <h3>💻 Para gerenciar (no computador):</h3>
+            <div class="url">http://localhost:4200/admin</div>
+            <div class="url">http://localhost:4200/display</div>
+        </div>
+        
+        <div class="info">
+            <h3>🔧 Se não funcionar:</h3>
+            <ul>
+                <li>Verifique se a TV está na mesma rede Wi-Fi</li>
+                <li>Teste primeiro no celular</li>
+                <li>Verifique se o firewall não está bloqueando</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

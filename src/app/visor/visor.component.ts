@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlavorService, Flavor, Title, Image } from '../services/flavor.service';
 import { StaticImagesService, StaticImage } from '../services/static-images.service';
@@ -21,6 +21,27 @@ export class VisorComponent {
   readonly images = this.staticImagesService.images;
   readonly settings = this.flavorService.settings;
   readonly headerGrid = this.flavorService.headerGrid;
+
+  // Menu auto-hide state
+  readonly showMenu = signal(false);
+  readonly enableScroll = signal(false);
+  private hideMenuTimeout: any;
+  private hideScrollTimeout: any;
+
+  // TV Mode detection
+  isTVMode(): boolean {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('tv') === 'true' || urlParams.get('mode') === 'tv';
+  }
+
+  // Toggle fullscreen for casting
+  toggleFullscreen(): void {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }
 
   readonly placedFlavors = computed<Flavor[]>(() => {
     const ids = this.grid().cells.filter((id): id is string => !!id);
@@ -47,12 +68,50 @@ export class VisorComponent {
 
   imageName(imageId: string | null): string {
     if (!imageId) return '';
-    return this.images().find(i => i.id === imageId)?.name ?? '';
+    return this.images().find((i: StaticImage) => i.id === imageId)?.name ?? '';
   }
 
   imageUrl(imageId: string | null): string {
     if (!imageId) return '';
-    return this.images().find(i => i.id === imageId)?.url ?? '';
+    return this.images().find((i: StaticImage) => i.id === imageId)?.url ?? '';
+  }
+
+  // Show menu and scroll on mouse move
+  @HostListener('mousemove')
+  onMouseMove(): void {
+    this.showMenu.set(true);
+    this.enableScroll.set(true);
+    this.resetHideTimeout();
+    this.resetScrollTimeout();
+  }
+
+  // Hide menu after 3 seconds
+  private resetHideTimeout(): void {
+    if (this.hideMenuTimeout) {
+      clearTimeout(this.hideMenuTimeout);
+    }
+    this.hideMenuTimeout = setTimeout(() => {
+      this.showMenu.set(false);
+    }, 3000);
+  }
+
+  // Hide scroll after 3 seconds
+  private resetScrollTimeout(): void {
+    if (this.hideScrollTimeout) {
+      clearTimeout(this.hideScrollTimeout);
+    }
+    this.hideScrollTimeout = setTimeout(() => {
+      this.enableScroll.set(false);
+    }, 3000);
+  }
+
+  // Show menu and scroll on mouse enter
+  @HostListener('mouseenter')
+  onMouseEnter(): void {
+    this.showMenu.set(true);
+    this.enableScroll.set(true);
+    this.resetHideTimeout();
+    this.resetScrollTimeout();
   }
 
 

@@ -1,56 +1,64 @@
-<div class="display">
+<!-- Menu de Navegação Temporário -->
+<nav style="position: fixed; top: 0; left: 0; right: 0; background: #2d3748; color: white; padding: 1rem; z-index: 10000; display: flex; gap: 1rem; align-items: center;">
+  <a href="/admin" style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: #4a5568; border-radius: 4px;">Admin</a>
+  <a href="/display" style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: #38a169; border-radius: 4px;">Display</a>
+  <a href="/visor" style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: #4a5568; border-radius: 4px;">Visor</a>
+  <span style="margin-left: auto; font-size: 0.9rem; opacity: 0.8;">🍦 Painel de Gelateria</span>
+</nav>
+
+<div class="display" style="margin-top: 4rem;">
   <div class="controls">
     <label>Colunas <input type="number" [(ngModel)]="columns" min="1" max="8" /></label>
     <label>Linhas <input type="number" [(ngModel)]="rows" min="1" max="8" /></label>
-    <button (click)="clearGrid()">Limpar grid</button>
+    <button (click)="clearGrid()">Limpar Grid</button>
   </div>
 
   <div class="board">
-    <!-- Logo Image -->
-    <div class="logo-image" [style.gridColumn]="'1 / span ' + grid().columns" *ngIf="settings().logoImageUrl" style="display: flex; justify-content: center; align-items: center; margin: 1rem 0;">
-      <img [src]="settings().logoImageUrl" alt="Logo" style="max-width: 100%; max-height: 120px; object-fit: contain;" />
-    </div>
-
-   <div class="grid" [style.gridTemplateColumns]="'repeat(' + grid().columns + ', 1fr)'">
-
-      <!-- Header titles DnD separate grid -->
-    <div class="header-grid" [style.gridColumn]="'1 / span ' + grid().columns" [style.display]="'grid'" [style.gridTemplateColumns]="'repeat(' + headerGrid().columns + ', 1fr)'" style="gap:0.5rem; margin-bottom:0.5rem;">
-      @for (catId of headerGrid().cells; track $index; let i = $index) {
-        <div class="header-cell" cdkDropList [cdkDropListData]="i" [cdkDropListConnectedTo]="headerConnectedIds()" (cdkDropListDropped)="dropHeaderToCell($event, i)" [id]="'header-cell-' + i" style="min-height:48px; border:1px dashed #bbb; display:flex; align-items:center; justify-content:center; background:#fafafa; position:relative;">
-          @if (catId) {
-            <div class="header-chip" cdkDrag [cdkDragData]="catId" style="padding:0.25rem 0.5rem; border:1px solid #ddd; background:#fff; border-radius:999px; cursor:move;">
-              {{ titleName(catId) }}
-            </div>
-          }
-          <button class="clear" (click)="clearHeaderCell(i)" style="position:absolute; right:2px; top:2px;">×</button>
-        </div>
-      }
-    </div>
-
-      @for (id of grid().cells; track $index; let i = $index) {
-        <div class="cell" cdkDropList [cdkDropListData]="i" [cdkDropListConnectedTo]="connectedIds()" (cdkDropListDropped)="dropToCell($event, i)" [id]="'cell-' + i">
-          <div class="slot">
-            @if (id) {
-              <div class="flavor" cdkDrag [cdkDragData]="id">
-                @if (imageUrl(id)) {
-                  <img [src]="imageUrl(id)" [alt]="imageName(id)" style="max-width: 100%; max-height: 100%; object-fit: cover;" />
-                } @else {
-                  <span>{{ nameFor(id) }}</span>
-                }
+    <!-- Grid de Títulos -->
+    <div class="header-section">
+      <h3>Títulos das Categorias</h3>
+      <div class="header-grid" [style.gridTemplateColumns]="'repeat(' + columns + ', 1fr)'">
+        @for (titleId of headerGrid().cells; track $index; let i = $index) {
+          <div class="header-cell" cdkDropList [cdkDropListData]="i" [cdkDropListConnectedTo]="headerConnectedIds()" (cdkDropListDropped)="dropHeaderToCell($event, i)" [id]="'header-cell-' + i">
+            @if (titleId) {
+              <div class="header-chip" cdkDrag [cdkDragData]="titleId">
+                {{ titleName(titleId) }}
               </div>
             }
-            <button class="clear" (click)="clearCell(i)">×</button>
+            <button class="clear" (click)="clearHeaderCell(i)">×</button>
           </div>
-        </div>
-      }
+        }
+      </div>
+    </div>
+
+    <!-- Grid Principal de Sabores -->
+    <div class="main-section">
+      <h3>Sabores no Grid</h3>
+      <div class="grid" [style.gridTemplateColumns]="'repeat(' + columns + ', 1fr)'" [style.gridTemplateRows]="'repeat(' + rows + ', 1fr)'">
+        @for (id of grid().cells; track $index; let i = $index) {
+          <div class="cell" cdkDropList [cdkDropListData]="i" [cdkDropListConnectedTo]="connectedIds()" (cdkDropListDropped)="dropToCell($event, i)" [id]="'cell-' + i">
+            <div class="slot">
+              @if (id) {
+                <div class="flavor" cdkDrag [cdkDragData]="id">
+                  @if (imageUrl(id)) {
+                    <img [src]="imageUrl(id)" [alt]="imageName(id)" style="max-width: 100%; max-height: 100%; object-fit: cover;" />
+                  } @else {
+                    <span>{{ nameFor(id) }}</span>
+                  }
+                </div>
+              }
+              <button class="clear" (click)="clearCell(i)">×</button>
+            </div>
+          </div>
+        }
+      </div>
     </div>
   </div>
-
 
   <!-- Images palette -->
   <div class="palette" cdkDropList [cdkDropListConnectedTo]="cellIds()" [id]="'image-palette'">
     <h3>Sabores disponíveis</h3>
-    @for (group of imagesByCategory(); track group.category.id) {
+    @for (group of availableImagesByCategory(); track group.category.id) {
       <div class="cat-group">
         <h4 class="cat-title">{{ group.category.name }}</h4>
         <div class="chips">
@@ -66,17 +74,17 @@
     <p class="hint">Arraste um sabor para uma célula. Clique no × para limpar.</p>
   </div>
 
-<!-- Category titles palette -->
-<div class="palette" cdkDropList [cdkDropListConnectedTo]="headerCellIds()" [id]="'cat-palette'">
-  <h3>Títulos disponíveis</h3>
-  <div class="chips">
-    @for (t of availableTitles(); track t.id) {
-      <div class="chip" cdkDrag [cdkDragData]="t.id">
-        {{ t.name }}
-      </div>
-    }
-  </div>
-  <p class="hint">Arraste um título para uma célula. Clique no × para limpar.</p>
+  <!-- Títulos palette -->
+  <div class="palette" cdkDropList [cdkDropListConnectedTo]="headerCellIds()" [id]="'title-palette'">
+    <h3>Títulos disponíveis</h3>
+    <div class="chips">
+      @for (t of availableTitles(); track t.id) {
+        <div class="chip" cdkDrag [cdkDragData]="t.id">
+          {{ t.name }}
+        </div>
+      }
+    </div>
+    <p class="hint">Arraste um título para uma célula. Clique no × para limpar.</p>
   </div>
 </div>
 

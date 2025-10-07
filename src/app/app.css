@@ -1,0 +1,33 @@
+/* App Component Styles - Professional Gelateria */
+nav {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1.5rem 2rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+nav a {
+  color: #4a5568;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+nav a:hover {
+  background: #f7fafc;
+  color: #2d3748;
+  transform: translateY(-1px);
+}
+
+nav a.router-link-active {
+  background: #2d3748;
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(45, 55, 72, 0.2);
+}

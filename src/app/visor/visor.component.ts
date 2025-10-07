@@ -176,7 +176,7 @@ export class VisorComponent implements OnInit, OnDestroy {
       currentImagesState !== this.lastImagesState ||
       currentSettingsState !== this.lastSettingsState;
 
-    // Always update timestamp for debugging
+    // Always update timestamp
     this.lastRefresh.set(new Date());
 
     if (hasChanges) {
@@ -186,11 +186,10 @@ export class VisorComponent implements OnInit, OnDestroy {
       this.lastImagesState = currentImagesState;
       this.lastSettingsState = currentSettingsState;
 
-      // Force re-render by updating signals
-      this.flavorService.forceSave();
-      this.staticImagesService.forceSave();
+      // Force page refresh to show changes
+      window.location.reload();
       
-      console.log('🔄 Visor atualizado automaticamente:', new Date().toLocaleTimeString());
+      console.log('🔄 Visor atualizado automaticamente - página recarregada:', new Date().toLocaleTimeString());
     } else {
       console.log('⏰ Verificação de mudanças - sem alterações:', new Date().toLocaleTimeString());
     }

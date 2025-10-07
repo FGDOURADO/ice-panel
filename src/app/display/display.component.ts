@@ -153,4 +153,16 @@ export class DisplayComponent {
       this.flavorService.clearHeaderGrid();
     }
   }
+
+  // Save changes and notify visor
+  saveChanges(): void {
+    // Force save to localStorage
+    this.flavorService.forceSave();
+    this.staticImagesService.forceSave();
+    
+    // Show success message
+    alert('✅ Mudanças salvas! O visor será atualizado automaticamente.');
+    
+    console.log('💾 Mudanças salvas no display:', new Date().toLocaleTimeString());
+  }
 }

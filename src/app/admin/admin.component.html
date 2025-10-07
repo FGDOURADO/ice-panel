@@ -4,12 +4,38 @@
   <a routerLink="/admin" style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: #38a169; border-radius: 4px;">⚙️ Admin</a>
   <a routerLink="/display" style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: #4a5568; border-radius: 4px;">🎯 Display</a>
   <a routerLink="/visor" style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: #4a5568; border-radius: 4px;">📺 Visor</a>
-  <button (click)="testBroadcastChannel()" style="color: white; text-decoration: none; padding: 0.5rem 1rem; background: #e53e3e; border: none; border-radius: 4px; cursor: pointer;">🧪 Teste</button>
   <span style="margin-left: auto; font-size: 0.9rem; opacity: 0.8;">🍦 Painel de Gelateria</span>
 </nav>
 
 <div class="admin" style="margin-top: 4rem;">
   <h1>🍦 Painel Administrativo</h1>
+
+  <!-- Configurações de Exibição -->
+  <section class="section">
+    <h2>⚙️ Configurações de Exibição</h2>
+    
+    <div class="form-group">
+      <label>URL da Logo</label>
+      <input [(ngModel)]="logoUrl" placeholder="https://exemplo.com/logo.png" />
+      <div style="margin-top: 0.75rem;">
+        <button class="btn btn-primary" (click)="updateLogoUrl()">💾 Salvar Logo</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Cor dos Títulos</label>
+      <input type="color" [(ngModel)]="titleColor" />
+      <div style="margin-top: 0.75rem;">
+        <button class="btn btn-primary" (click)="updateTitleColor()">🎨 Salvar Cor</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Mostrar Linhas do Grid</label>
+      <input type="checkbox" [(ngModel)]="showGridLines" (change)="updateShowGridLines()" />
+      <span style="margin-left: 0.5rem;">Exibir linhas do grid no visor</span>
+    </div>
+  </section>
 
   <section class="section">
     <h2>📂 Categorias</h2>

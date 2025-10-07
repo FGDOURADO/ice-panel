@@ -39,7 +39,17 @@ export class AdminComponent {
   editImageName = signal<string>('');
   editImageUrl = signal<string>('');
   editImageCategory = signal<string>('');
-  constructor() {}
+
+  // Configurações de exibição
+  readonly settings = this.flavorService.settings;
+  logoUrl = '';
+  titleColor = '#000000';
+  showGridLines = true;
+
+  constructor() {
+    // Inicializar configurações
+    this.loadSettings();
+  }
 
   addCategory(): void {
     const name = this.newCategoryName.trim();
@@ -240,6 +250,35 @@ export class AdminComponent {
     this.editImageCategory.set('');
   }
 
+  // Carregar configurações
+  private loadSettings(): void {
+    const currentSettings = this.settings();
+    this.logoUrl = currentSettings.logoImageUrl;
+    this.titleColor = currentSettings.titleColor;
+    this.showGridLines = currentSettings.showGridLines;
+  }
+
+  // Atualizar URL da logo
+  updateLogoUrl(): void {
+    console.log('⚙️ Admin: Atualizando URL da logo:', this.logoUrl);
+    this.flavorService.setLogoImageUrl(this.logoUrl);
+    this.notifyVisorUpdate();
+  }
+
+  // Atualizar cor dos títulos
+  updateTitleColor(): void {
+    console.log('⚙️ Admin: Atualizando cor dos títulos:', this.titleColor);
+    this.flavorService.setTitleColor(this.titleColor);
+    this.notifyVisorUpdate();
+  }
+
+  // Atualizar mostrar linhas do grid
+  updateShowGridLines(): void {
+    console.log('⚙️ Admin: Atualizando mostrar linhas do grid:', this.showGridLines);
+    this.flavorService.setShowGridLines(this.showGridLines);
+    this.notifyVisorUpdate();
+  }
+
   // Notificar visor sobre mudanças
   private notifyVisorUpdate(): void {
     console.log('⚙️ Admin: notifyVisorUpdate() chamado');
@@ -275,27 +314,6 @@ export class AdminComponent {
     }, 100);
   }
 
-  // Método de teste para verificar BroadcastChannel
-  testBroadcastChannel(): void {
-    console.log('⚙️ Admin: Testando BroadcastChannel...');
-    
-    const channel = new BroadcastChannel('ice-panel-updates');
-    
-    const testMessage = {
-      type: 'test',
-      timestamp: new Date().toISOString(),
-      source: 'admin-test'
-    };
-    
-    console.log('⚙️ Admin: Enviando mensagem de teste:', testMessage);
-    
-    channel.postMessage(testMessage);
-    
-    setTimeout(() => {
-      channel.close();
-      console.log('⚙️ Admin: Canal de teste fechado');
-    }, 100);
-  }
 }
 
 

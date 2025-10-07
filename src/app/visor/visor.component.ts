@@ -172,6 +172,7 @@ export class VisorComponent implements OnInit, OnDestroy {
           
           // Recarregar a página para mostrar as mudanças
           setTimeout(() => {
+            console.log('📺 Recarregando visor na rota atual:', window.location.pathname);
             window.location.reload();
           }, 500);
         } else {

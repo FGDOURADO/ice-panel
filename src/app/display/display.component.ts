@@ -27,6 +27,9 @@ export class DisplayComponent {
   readonly hasChanges = signal(false);
   private lastSavedState: string = '';
 
+  // Busca de sabores
+  searchTerm = '';
+
 
   get columns(): number { return this.grid().columns; }
   get rows(): number { return this.grid().rows; }
@@ -60,13 +63,19 @@ export class DisplayComponent {
     return this.images().filter(image => !usedImageIds.has(image.id));
   });
 
-  // Get available images by category (not used in grid)
+  // Get available images by category (not used in grid) with search filter
   readonly availableImagesByCategory = computed(() => {
     const usedImageIds = new Set(this.grid().cells.filter(id => id !== null));
     const byCat = new Map<string, any[]>();
+    const searchLower = this.searchTerm.toLowerCase().trim();
     
     for (const image of this.images()) {
       if (usedImageIds.has(image.id)) continue; // Skip used images
+      
+      // Apply search filter
+      if (searchLower && !image.name.toLowerCase().includes(searchLower)) {
+        continue;
+      }
       
       const cat = this.categories().find(c => c.id === image.categoryId);
       if (!cat) continue;
@@ -77,7 +86,7 @@ export class DisplayComponent {
     return Array.from(byCat.entries()).map(([id, images]) => ({
       category: this.categories().find(c => c.id === id)!,
       images
-    }));
+    })).filter(group => group.images.length > 0); // Only show categories with matching images
   });
 
   readonly cellIds = computed(() => this.grid().cells.map((_, i) => `cell-${i}`));

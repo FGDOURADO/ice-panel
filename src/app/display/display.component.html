@@ -60,6 +60,18 @@
   <!-- Images palette -->
   <div class="palette" cdkDropList [cdkDropListConnectedTo]="cellIds()" [id]="'image-palette'">
     <h3>Sabores disponíveis</h3>
+    
+    <!-- Campo de busca -->
+    <div class="search-container" style="margin-bottom: 1rem;">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        placeholder="🔍 Buscar sabores..." 
+        class="search-input"
+        style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 0.9rem;"
+      />
+    </div>
+    
     @for (group of availableImagesByCategory(); track group.category.id) {
       <div class="cat-group">
         <h4 class="cat-title">{{ group.category.name }}</h4>
@@ -73,6 +85,12 @@
         </div>
       </div>
     }
+    
+    <!-- Mensagem quando não há resultados -->
+    <div *ngIf="availableImagesByCategory().length === 0 && searchTerm.trim()" class="no-results" style="text-align: center; padding: 1rem; color: #718096; font-style: italic;">
+      🔍 Nenhum sabor encontrado para "{{ searchTerm }}"
+    </div>
+    
     <p class="hint">Arraste um sabor para uma célula. Clique no × para limpar.</p>
   </div>
 

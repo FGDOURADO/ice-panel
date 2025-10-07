@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor - Ice Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .nav-button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .nav-button:hover {
+            background: #0056b3;
+        }
+        .nav-button.admin { background: #28a745; }
+        .nav-button.admin:hover { background: #1e7e34; }
+        .nav-button.visor { background: #dc3545; }
+        .nav-button.visor:hover { background: #c82333; }
+        .nav-button.home { background: #6c757d; }
+        .nav-button.home:hover { background: #545b62; }
+        
+        .visor-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        .visor-header h2 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .visor-header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .grid-item {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s;
+        }
+        .grid-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .grid-item img {
+            max-width: 80px;
+            max-height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .grid-item h3 {
+            margin: 0;
+            color: #333;
+            font-size: 1.1em;
+        }
+        .grid-item p {
+            margin: 5px 0 0 0;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .category-title {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0 10px 0;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .status-bar {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #28a745;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-buttons">
+            <a href="/ice-panel/" class="nav-button home">🏠 Home</a>
+            <a href="/ice-panel/display" class="nav-button">📱 Display</a>
+            <a href="/ice-panel/admin" class="nav-button admin">⚙️ Admin</a>
+            <a href="/ice-panel/visor" class="nav-button visor">👁️ Visor</a>
+        </div>
+        
+        <h1>👁️ Visor - Exibição Pública</h1>
+        <p>Painel público para exibição dos sorvetes disponíveis.</p>
+        
+        <div class="visor-header">
+            <h2>🍦 Le Botteghe di Leonardo</h2>
+            <p>Sabores Artesanais Premium</p>
+        </div>
+        
+        <div class="category-title">🍫 Sabores Tradicionais</div>
+        <div class="grid-container">
+            <div class="grid-item">
+                <div style="width: 80px; height: 80px; background: #8B4513; border-radius: 50%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2em;">🍫</div>
+                <h3>Chocolate</h3>
+                <p>R$ 8,50</p>
+            </div>
+            <div class="grid-item">
+                <div style="width: 80px; height: 80px; background: #FF69B4; border-radius: 50%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2em;">🍓</div>
+                <h3>Morango</h3>
+                <p>R$ 8,50</p>
+            </div>
+            <div class="grid-item">
+                <div style="width: 80px; height: 80px; background: #FFD700; border-radius: 50%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2em;">🥥</div>
+                <h3>Coco</h3>
+                <p>R$ 8,50</p>
+            </div>
+        </div>
+        
+        <div class="category-title">🌱 Sabores Veganos</div>
+        <div class="grid-container">
+            <div class="grid-item">
+                <div style="width: 80px; height: 80px; background: #8B4513; border-radius: 50%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2em;">🥜</div>
+                <h3>Amendoim</h3>
+                <p>R$ 9,50</p>
+            </div>
+            <div class="grid-item">
+                <div style="width: 80px; height: 80px; background: #32CD32; border-radius: 50%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2em;">🥬</div>
+                <h3>Matcha</h3>
+                <p>R$ 9,50</p>
+            </div>
+            <div class="grid-item">
+                <div style="width: 80px; height: 80px; background: #FFD700; border-radius: 50%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2em;">🥭</div>
+                <h3>Manga</h3>
+                <p>R$ 9,50</p>
+            </div>
+        </div>
+        
+        <div class="category-title">🍯 Sabores Diet</div>
+        <div class="grid-container">
+            <div class="grid-item">
+                <div style="width: 80px; height: 80px; background: #FFB6C1; border-radius: 50%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2em;">🍯</div>
+                <h3>Mel</h3>
+                <p>R$ 10,50</p>
+            </div>
+            <div class="grid-item">
+                <div style="width: 80px; height: 80px; background: #DDA0DD; border-radius: 50%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2em;">🍇</div>
+                <h3>Uva</h3>
+                <p>R$ 10,50</p>
+            </div>
+            <div class="grid-item">
+                <div style="width: 80px; height: 80px; background: #F0E68C; border-radius: 50%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2em;">🍋</div>
+                <h3>Limão</h3>
+                <p>R$ 10,50</p>
+            </div>
+        </div>
+        
+        <div class="status-bar">
+            <h3>✅ Visor Ativo</h3>
+            <p>Painel público funcionando perfeitamente! Os clientes podem ver todos os sabores disponíveis.</p>
+        </div>
+    </div>
+</body>
+</html>

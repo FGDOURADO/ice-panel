@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display - Ice Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .nav-button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .nav-button:hover {
+            background: #0056b3;
+        }
+        .nav-button.admin { background: #28a745; }
+        .nav-button.admin:hover { background: #1e7e34; }
+        .nav-button.visor { background: #dc3545; }
+        .nav-button.visor:hover { background: #c82333; }
+        .nav-button.home { background: #6c757d; }
+        .nav-button.home:hover { background: #545b62; }
+        
+        .grid-demo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .grid-item {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .controls {
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .controls label {
+            margin-right: 20px;
+        }
+        .controls input {
+            margin: 0 5px;
+            padding: 5px;
+        }
+        .controls button {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-buttons">
+            <a href="/ice-panel/" class="nav-button home">🏠 Home</a>
+            <a href="/ice-panel/display" class="nav-button">📱 Display</a>
+            <a href="/ice-panel/admin" class="nav-button admin">⚙️ Admin</a>
+            <a href="/ice-panel/visor" class="nav-button visor">👁️ Visor</a>
+        </div>
+        
+        <h1>📱 Display - Painel de Controle</h1>
+        <p>Configure o layout do painel de sorvetes.</p>
+        
+        <div class="controls">
+            <label>Colunas: <input type="number" value="3" min="1" max="8" /></label>
+            <label>Linhas: <input type="number" value="3" min="1" max="8" /></label>
+            <button>Limpar Grid</button>
+        </div>
+        
+        <div class="grid-demo">
+            <div class="grid-item">Sorvete 1</div>
+            <div class="grid-item">Sorvete 2</div>
+            <div class="grid-item">Sorvete 3</div>
+            <div class="grid-item">Sorvete 4</div>
+            <div class="grid-item">Sorvete 5</div>
+            <div class="grid-item">Sorvete 6</div>
+            <div class="grid-item">Sorvete 7</div>
+            <div class="grid-item">Sorvete 8</div>
+            <div class="grid-item">Sorvete 9</div>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #d4edda; border-radius: 5px; border-left: 4px solid #28a745;">
+            <h3>✅ Funcionalidades do Display:</h3>
+            <ul>
+                <li>✅ Configurar número de colunas e linhas</li>
+                <li>✅ Arrastar e soltar sorvetes</li>
+                <li>✅ Gerenciar categorias</li>
+                <li>✅ Visualizar em tempo real</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

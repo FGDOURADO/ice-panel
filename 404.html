@@ -14,7 +14,14 @@
 <body>
     <div class="loading">🍦 Carregando Painel de Gelateria...</div>
     <script>
-        // Redirect to Angular app
+        // Preserve the current path and redirect to Angular app
+        const currentPath = window.location.pathname;
+        const targetPath = currentPath.startsWith('/ice-panel/') ? currentPath : '/ice-panel' + currentPath;
+        
+        // Store the target path for Angular to handle
+        sessionStorage.setItem('redirect', targetPath);
+        
+        // Redirect to the main app
         window.location.href = '/ice-panel/';
     </script>
 </body>

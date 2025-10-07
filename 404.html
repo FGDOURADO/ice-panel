@@ -6,13 +6,16 @@
     <base href="/ice-panel/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        body { font-family: Inter, sans-serif; text-align: center; padding: 2rem; }
+        .loading { color: #4a5568; }
+    </style>
 </head>
 <body>
+    <div class="loading">🍦 Carregando Painel de Gelateria...</div>
     <script>
         // Redirect to Angular app
-        sessionStorage.redirect = location.href;
-        location.href = '/ice-panel/';
+        window.location.href = '/ice-panel/';
     </script>
-    <app-root></app-root>
 </body>
 </html>

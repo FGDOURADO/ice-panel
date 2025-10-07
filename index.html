@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>🍦 Painel de Gelateria</title>
-    <base href="/ice-panel/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <style>
@@ -44,9 +43,18 @@
     </div>
     
     <script>
+        // Dynamic base href detection
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const baseHref = isLocalhost ? '/' : '/ice-panel/';
+        
+        // Set base href dynamically
+        const base = document.createElement('base');
+        base.href = baseHref;
+        document.head.appendChild(base);
+        
         // Redirect to home if accessing root
-        if (window.location.pathname === '/ice-panel/' || window.location.pathname === '/ice-panel') {
-            window.location.href = '/ice-panel/home';
+        if (window.location.pathname === baseHref || window.location.pathname === baseHref.slice(0, -1)) {
+            window.location.href = baseHref + 'home';
         }
     </script>
 </body>

@@ -29,8 +29,7 @@
             "styles": [
               "src/styles.css"
             ],
-            "outputMode": "static",
-            "baseHref": "/ice-panel/"
+            "outputMode": "static"
           },
           "configurations": {
             "production": {

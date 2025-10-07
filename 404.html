@@ -16,7 +16,20 @@
     <script>
         // Preserve the current path and redirect to Angular app
         const currentPath = window.location.pathname;
-        const targetPath = currentPath.startsWith('/ice-panel/') ? currentPath : '/ice-panel' + currentPath;
+        const search = window.location.search;
+        const hash = window.location.hash;
+        
+        // Build the complete target path
+        let targetPath = currentPath;
+        if (!targetPath.startsWith('/ice-panel/')) {
+            targetPath = '/ice-panel' + (targetPath === '/' ? '' : targetPath);
+        }
+        
+        // Add search params and hash if they exist
+        if (search) targetPath += search;
+        if (hash) targetPath += hash;
+        
+        console.log('404.html: Preserving path:', targetPath);
         
         // Store the target path for Angular to handle
         sessionStorage.setItem('redirect', targetPath);

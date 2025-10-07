@@ -1,12 +1,13 @@
 import { Component, computed, inject, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { FlavorService, Flavor, Title, Image } from '../services/flavor.service';
 import { StaticImagesService, StaticImage } from '../services/static-images.service';
 
 @Component({
   selector: 'app-visor',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './visor.component.html',
   styleUrls: ['./visor.component.css']
 })

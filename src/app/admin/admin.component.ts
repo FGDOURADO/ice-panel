@@ -1,13 +1,14 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { FlavorService, FlavorCategory, Flavor, Title, Image } from '../services/flavor.service';
 import { StaticImagesService } from '../services/static-images.service';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })

@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { CdkDrag, CdkDropList, DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { FlavorService } from '../services/flavor.service';
 import { StaticImagesService } from '../services/static-images.service';
@@ -8,7 +9,7 @@ import { StaticImagesService } from '../services/static-images.service';
 @Component({
   selector: 'app-display',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule],
+  imports: [CommonModule, FormsModule, RouterLink, DragDropModule],
   templateUrl: './display.component.html',
   styleUrls: ['./display.component.css']
 })

@@ -65,7 +65,8 @@
     <div class="search-container" style="margin-bottom: 1rem;">
       <input 
         type="text" 
-        [(ngModel)]="searchTerm" 
+        [ngModel]="searchTerm()" 
+        (ngModelChange)="searchTerm.set($event)"
         placeholder="🔍 Buscar sabores..." 
         class="search-input"
         style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 0.9rem;"
@@ -87,8 +88,8 @@
     }
     
     <!-- Mensagem quando não há resultados -->
-    <div *ngIf="availableImagesByCategory().length === 0 && searchTerm.trim()" class="no-results" style="text-align: center; padding: 1rem; color: #718096; font-style: italic;">
-      🔍 Nenhum sabor encontrado para "{{ searchTerm }}"
+    <div *ngIf="availableImagesByCategory().length === 0 && searchTerm().trim()" class="no-results" style="text-align: center; padding: 1rem; color: #718096; font-style: italic;">
+      🔍 Nenhum sabor encontrado para "{{ searchTerm() }}"
     </div>
     
     <p class="hint">Arraste um sabor para uma célula. Clique no × para limpar.</p>

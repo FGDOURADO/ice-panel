@@ -28,7 +28,7 @@ export class DisplayComponent {
   private lastSavedState: string = '';
 
   // Busca de sabores
-  searchTerm = '';
+  readonly searchTerm = signal('');
 
 
   get columns(): number { return this.grid().columns; }
@@ -67,7 +67,7 @@ export class DisplayComponent {
   readonly availableImagesByCategory = computed(() => {
     const usedImageIds = new Set(this.grid().cells.filter(id => id !== null));
     const byCat = new Map<string, any[]>();
-    const searchLower = this.searchTerm.toLowerCase().trim();
+    const searchLower = this.searchTerm().toLowerCase().trim();
     
     for (const image of this.images()) {
       if (usedImageIds.has(image.id)) continue; // Skip used images

@@ -114,6 +114,14 @@
   background: #2f855a;
 }
 
+.btn-primary {
+  background: #3182ce;
+}
+
+.btn-primary:hover {
+  background: #2c5aa0;
+}
+
 /* Botões dentro de form-group precisam de espaçamento */
 .form-group .btn {
   margin-top: 0.75rem !important;

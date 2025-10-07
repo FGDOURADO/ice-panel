@@ -30,7 +30,7 @@ jobs:
       run: npm ci
       
     - name: Build Angular app
-      run: npm run build
+      run: npm run build -- --base-href /ice-panel/
       
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3

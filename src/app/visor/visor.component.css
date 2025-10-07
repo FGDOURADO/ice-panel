@@ -44,6 +44,16 @@
   overflow-y: auto;
 }
 
+/* Garantir que a logo seja sempre visível quando scroll é desabilitado */
+.visor:not(.scroll-enabled) .logo-image {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: white;
+  padding: 0.5rem 0;
+  margin-bottom: 1rem;
+}
+
 /* Espaçador para scroll - sempre presente */
 .scroll-spacer {
   height: 4rem;

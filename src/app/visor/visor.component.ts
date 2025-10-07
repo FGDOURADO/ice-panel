@@ -100,7 +100,37 @@ export class VisorComponent implements OnInit, OnDestroy {
     }
     this.hideMenuTimeout = setTimeout(() => {
       this.showMenu.set(false);
+      this.adjustScrollForMenuHide();
     }, 3000);
+  }
+
+  // Ajustar scroll quando menu desaparece para não cortar a logo
+  private adjustScrollForMenuHide(): void {
+    const visorElement = document.querySelector('.visor') as HTMLElement;
+    if (visorElement) {
+      // Verificar se o scroll está muito para baixo
+      const scrollTop = visorElement.scrollTop;
+      const scrollHeight = visorElement.scrollHeight;
+      const clientHeight = visorElement.clientHeight;
+      
+      // Se o scroll está na parte inferior (últimos 20% do conteúdo)
+      const isNearBottom = scrollTop + clientHeight >= scrollHeight * 0.8;
+      
+      if (isNearBottom) {
+        // Ajustar scroll para mostrar a logo
+        const logoElement = visorElement.querySelector('.logo-image') as HTMLElement;
+        if (logoElement) {
+          // Scroll para mostrar a logo com um pouco de espaço
+          logoElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+          });
+          
+          console.log('📺 Scroll ajustado para mostrar a logo');
+        }
+      }
+    }
   }
 
   // Hide scroll after 3 seconds
@@ -110,7 +140,37 @@ export class VisorComponent implements OnInit, OnDestroy {
     }
     this.hideScrollTimeout = setTimeout(() => {
       this.enableScroll.set(false);
+      this.adjustScrollForScrollHide();
     }, 3000);
+  }
+
+  // Ajustar scroll quando scroll é desabilitado
+  private adjustScrollForScrollHide(): void {
+    const visorElement = document.querySelector('.visor') as HTMLElement;
+    if (visorElement) {
+      // Verificar se o scroll está muito para baixo
+      const scrollTop = visorElement.scrollTop;
+      const scrollHeight = visorElement.scrollHeight;
+      const clientHeight = visorElement.clientHeight;
+      
+      // Se o scroll está na parte inferior (últimos 30% do conteúdo)
+      const isNearBottom = scrollTop + clientHeight >= scrollHeight * 0.7;
+      
+      if (isNearBottom) {
+        // Ajustar scroll para mostrar a logo
+        const logoElement = visorElement.querySelector('.logo-image') as HTMLElement;
+        if (logoElement) {
+          // Scroll para mostrar a logo com um pouco de espaço
+          logoElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+          });
+          
+          console.log('📺 Scroll ajustado para mostrar a logo (scroll desabilitado)');
+        }
+      }
+    }
   }
 
   // Show menu and scroll on mouse enter

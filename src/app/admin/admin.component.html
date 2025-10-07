@@ -123,6 +123,18 @@
     </div>
     <button class="btn btn-success" (click)="addImage()">➕ Adicionar Imagem</button>
 
+    <!-- Campo de busca de imagens -->
+    <div class="search-container" style="margin: 1.5rem 0;">
+      <input 
+        type="text" 
+        [value]="searchImagesTerm()" 
+        (input)="updateImagesSearchTerm($any($event.target).value)"
+        placeholder="🔍 Buscar imagens..." 
+        class="search-input"
+        style="width: 100%; padding: 0.5rem; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 0.9rem;"
+      />
+    </div>
+
     <div class="images-grid" *ngFor="let group of imagesByCategory()">
       <h3 class="cat-title">{{ group.category.name }}</h3>
       <div class="image-item" *ngFor="let i of group.images">
@@ -150,6 +162,12 @@
         </div>
       </div>
     </div>
+    
+    <!-- Mensagem quando não há resultados de busca -->
+    <div *ngIf="imagesByCategory().length === 0 && searchImagesTerm().trim()" class="no-results" style="text-align: center; padding: 1rem; color: #718096; font-style: italic;">
+      🔍 Nenhuma imagem encontrada para "{{ searchImagesTerm() }}"
+    </div>
+    
     <div class="empty-state" *ngIf="images().length === 0">
       Nenhuma imagem cadastrada
     </div>

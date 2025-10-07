@@ -46,6 +46,15 @@ export class AdminComponent {
   titleColor = '#000000';
   showGridLines = true;
 
+  // Busca de imagens
+  readonly searchImagesTerm = signal('');
+
+  // Método para atualizar busca de imagens
+  updateImagesSearchTerm(value: string): void {
+    console.log('🔍 Admin: Busca de imagens atualizada:', value);
+    this.searchImagesTerm.set(value);
+  }
+
   constructor() {
     // Inicializar configurações
     this.loadSettings();
@@ -167,16 +176,29 @@ export class AdminComponent {
   readonly imagesByCategory = computed(() => {
     const byCat = new Map<string, Image[]>();
     const images = this.images();
+    const searchLower = this.searchImagesTerm().toLowerCase().trim();
+    
+    console.log('🔍 Admin: Computed imagesByCategory executado com termo:', searchLower);
+    
     for (const i of images) {
+      // Apply search filter
+      if (searchLower && !i.name.toLowerCase().includes(searchLower)) {
+        continue;
+      }
+      
       const cat = this.categories().find(c => c.id === i.categoryId);
       if (!cat) continue;
       if (!byCat.has(cat.id)) byCat.set(cat.id, []);
       byCat.get(cat.id)!.push(i);
     }
-    return Array.from(byCat.entries()).map(([id, images]) => ({
+    
+    const result = Array.from(byCat.entries()).map(([id, images]) => ({
       category: this.categories().find(c => c.id === id)!,
       images
-    }));
+    })).filter(group => group.images.length > 0); // Only show categories with matching images
+    
+    console.log('🔍 Admin: Resultado da busca de imagens:', result.length, 'categorias encontradas');
+    return result;
   });
 
   // Métodos para edição inline

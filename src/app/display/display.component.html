@@ -12,7 +12,7 @@
     <label>Colunas <input type="number" [(ngModel)]="columns" min="1" max="8" /></label>
     <label>Linhas <input type="number" [(ngModel)]="rows" min="1" max="8" /></label>
     <button (click)="clearGrid()">Limpar Grid</button>
-    <button (click)="saveChanges()" class="btn-save">💾 Salvar Mudanças</button>
+    <button (click)="saveChanges()" class="btn-save" [disabled]="!hasChanges()">💾 Salvar Mudanças</button>
   </div>
 
   <div class="board">

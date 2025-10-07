@@ -384,6 +384,23 @@ export class FlavorService {
   // Método público para forçar salvamento
   public forceSave(): void {
     this.save();
+    // Incrementar versão para indicar que foi salvo
+    this.incrementDataVersion();
+  }
+
+  // Incrementar versão dos dados
+  private incrementDataVersion(): void {
+    if (this.isBrowser) {
+      const currentVersion = this.getDataVersion();
+      localStorage.setItem('ice-panel-data-version', (currentVersion + 1).toString());
+    }
+  }
+
+  // Obter versão atual dos dados
+  public getDataVersion(): number {
+    if (!this.isBrowser) return 0;
+    const version = localStorage.getItem('ice-panel-data-version');
+    return version ? parseInt(version, 10) : 0;
   }
 }
 

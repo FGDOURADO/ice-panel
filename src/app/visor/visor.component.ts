@@ -23,20 +23,18 @@ export class VisorComponent implements OnInit, OnDestroy {
   readonly settings = this.flavorService.settings;
   readonly headerGrid = this.flavorService.headerGrid;
 
+  // BroadcastChannel para receber atualizações
+  private broadcastChannel: BroadcastChannel | null = null;
+  
+  // Versões dos dados para controle de atualização
+  private lastFlavorVersion: number = 0;
+  private lastImagesVersion: number = 0;
+
   // Menu auto-hide state
   readonly showMenu = signal(false);
   readonly enableScroll = signal(false);
   private hideMenuTimeout: any;
   private hideScrollTimeout: any;
-
-  // Auto-refresh state
-  readonly lastRefresh = signal(new Date());
-  private refreshInterval: any;
-  private lastGridState: string = '';
-  private lastHeaderGridState: string = '';
-  private lastImagesState: string = '';
-  private lastSettingsState: string = '';
-  private broadcastChannel: BroadcastChannel | null = null;
 
   // TV Mode detection
   isTVMode(): boolean {
@@ -124,100 +122,65 @@ export class VisorComponent implements OnInit, OnDestroy {
     this.resetScrollTimeout();
   }
 
-  // Auto-refresh lifecycle
+  // Inicializar BroadcastChannel
   ngOnInit(): void {
-    this.initializeStates();
-    this.startAutoRefresh();
     this.setupBroadcastListener();
+    this.initializeDataVersions();
   }
 
+  // Inicializar versões dos dados
+  private initializeDataVersions(): void {
+    this.lastFlavorVersion = this.flavorService.getDataVersion();
+    this.lastImagesVersion = this.staticImagesService.getDataVersion();
+    console.log('📺 Visor inicializado com versões:', {
+      flavor: this.lastFlavorVersion,
+      images: this.lastImagesVersion
+    });
+  }
+
+  // Limpar BroadcastChannel
   ngOnDestroy(): void {
-    this.stopAutoRefresh();
-    if (this.hideMenuTimeout) {
-      clearTimeout(this.hideMenuTimeout);
-    }
-    if (this.hideScrollTimeout) {
-      clearTimeout(this.hideScrollTimeout);
-    }
     if (this.broadcastChannel) {
       this.broadcastChannel.close();
     }
   }
 
-  // Initialize state tracking
-  private initializeStates(): void {
-    this.lastGridState = JSON.stringify(this.grid());
-    this.lastHeaderGridState = JSON.stringify(this.headerGrid());
-    this.lastImagesState = JSON.stringify(this.images());
-    this.lastSettingsState = JSON.stringify(this.settings());
-  }
-
-  // Start auto-refresh every 1 minute
-  private startAutoRefresh(): void {
-    this.refreshInterval = setInterval(() => {
-      this.refreshData();
-    }, 60000); // 1 minute = 60000ms
-  }
-
-  // Stop auto-refresh
-  private stopAutoRefresh(): void {
-    if (this.refreshInterval) {
-      clearInterval(this.refreshInterval);
-      this.refreshInterval = null;
-    }
-  }
-
-  // Setup broadcast listener for immediate updates
+  // Configurar listener para atualizações
   private setupBroadcastListener(): void {
     this.broadcastChannel = new BroadcastChannel('ice-panel-updates');
-    this.broadcastChannel.onmessage = (event) => {
-      if (event.data.type === 'data-updated') {
-        console.log('📡 Recebida notificação de atualização:', event.data.source);
-        // Update timestamp immediately
-        this.lastRefresh.set(new Date());
-        // Force immediate refresh
-        window.location.reload();
+    
+    this.broadcastChannel.addEventListener('message', (event) => {
+      if (event.data.type === 'data-saved') {
+        console.log('📺 Visor recebeu notificação de atualização:', event.data.timestamp);
+        
+        // Verificar se realmente houve mudanças nas versões
+        const currentFlavorVersion = this.flavorService.getDataVersion();
+        const currentImagesVersion = this.staticImagesService.getDataVersion();
+        
+        const hasChanges = currentFlavorVersion > this.lastFlavorVersion || 
+                          currentImagesVersion > this.lastImagesVersion;
+        
+        if (hasChanges) {
+          console.log('📺 Mudanças detectadas! Atualizando visor...', {
+            flavor: `${this.lastFlavorVersion} → ${currentFlavorVersion}`,
+            images: `${this.lastImagesVersion} → ${currentImagesVersion}`
+          });
+          
+          // Atualizar versões locais
+          this.lastFlavorVersion = currentFlavorVersion;
+          this.lastImagesVersion = currentImagesVersion;
+          
+          // Recarregar a página para mostrar as mudanças
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
+        } else {
+          console.log('📺 Nenhuma mudança detectada. Visor não será atualizado.');
+        }
       }
-    };
+    });
   }
 
-  // Check for changes and refresh if needed
-  private refreshData(): void {
-    const currentGridState = JSON.stringify(this.grid());
-    const currentHeaderGridState = JSON.stringify(this.headerGrid());
-    const currentImagesState = JSON.stringify(this.images());
-    const currentSettingsState = JSON.stringify(this.settings());
-
-    // Check if any data has changed
-    const hasChanges = 
-      currentGridState !== this.lastGridState ||
-      currentHeaderGridState !== this.lastHeaderGridState ||
-      currentImagesState !== this.lastImagesState ||
-      currentSettingsState !== this.lastSettingsState;
-
-    // Always update timestamp
-    this.lastRefresh.set(new Date());
-
-    if (hasChanges) {
-      // Update states
-      this.lastGridState = currentGridState;
-      this.lastHeaderGridState = currentHeaderGridState;
-      this.lastImagesState = currentImagesState;
-      this.lastSettingsState = currentSettingsState;
-
-      // Force page refresh to show changes
-      window.location.reload();
-      
-      console.log('🔄 Visor atualizado automaticamente - página recarregada:', new Date().toLocaleTimeString());
-    } else {
-      console.log('⏰ Verificação de mudanças - sem alterações:', new Date().toLocaleTimeString());
-    }
-  }
-
-  // Manual refresh method
-  forceRefresh(): void {
-    this.refreshData();
-  }
 }
 
 

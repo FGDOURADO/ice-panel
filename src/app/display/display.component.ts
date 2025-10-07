@@ -23,6 +23,10 @@ export class DisplayComponent {
   readonly categories = this.flavorService.categories;
   readonly titles = this.flavorService.titles;
 
+  // Estado de mudanças
+  readonly hasChanges = signal(false);
+  private lastSavedState: string = '';
+
 
   get columns(): number { return this.grid().columns; }
   get rows(): number { return this.grid().rows; }
@@ -91,17 +95,20 @@ export class DisplayComponent {
     // Se está movendo dentro do grid
     if (fromCellIndex != null && fromCellIndex !== cellIndex) {
       this.flavorService.swapCells(fromCellIndex, cellIndex);
+      this.markAsChanged();
       return;
     }
 
     // Se está colocando um item novo
     if (itemId) {
       this.flavorService.placeFlavorAtCell(cellIndex, itemId);
+      this.markAsChanged();
     }
   }
 
   clearCell(index: number): void {
     this.flavorService.placeFlavorAtCell(index, null);
+    this.markAsChanged();
   }
 
 
@@ -113,17 +120,20 @@ export class DisplayComponent {
     // Se está movendo dentro do grid de títulos
     if (fromIdx != null && fromIdx !== cellIndex) {
       this.flavorService.swapHeaderCells(fromIdx, cellIndex);
+      this.markAsChanged();
       return;
     }
     
     // Se está colocando um título novo
     if (draggedTitleId) {
       this.flavorService.placeCategoryAtHeaderCell(cellIndex, draggedTitleId);
+      this.markAsChanged();
     }
   }
 
   clearHeaderCell(index: number): void {
     this.flavorService.placeCategoryAtHeaderCell(index, null);
+    this.markAsChanged();
   }
 
   titleName(titleId: string | null): string {
@@ -146,32 +156,54 @@ export class DisplayComponent {
     return this.images().find(i => i.id === imageId)?.url ?? '';
   }
 
+  // Detectar mudanças
+  private markAsChanged(): void {
+    this.hasChanges.set(true);
+  }
+
+  // Salvar mudanças com confirmação
+  saveChanges(): void {
+    if (confirm('💾 Deseja salvar as mudanças? O visor será atualizado automaticamente.')) {
+      // Salvar no localStorage
+      this.flavorService.forceSave();
+      this.staticImagesService.forceSave();
+      
+      // Atualizar estado
+      this.hasChanges.set(false);
+      this.lastSavedState = this.getCurrentState();
+      
+      // Notificar visor via BroadcastChannel
+      const channel = new BroadcastChannel('ice-panel-updates');
+      channel.postMessage({
+        type: 'data-saved',
+        timestamp: new Date().toISOString(),
+        source: 'display'
+      });
+      channel.close();
+      
+      // Mostrar confirmação
+      alert('✅ Mudanças salvas com sucesso! O visor foi atualizado.');
+      
+      console.log('💾 Mudanças salvas no display:', new Date().toLocaleTimeString());
+    }
+  }
+
+  // Obter estado atual para comparação
+  private getCurrentState(): string {
+    return JSON.stringify({
+      grid: this.grid(),
+      headerGrid: this.headerGrid(),
+      images: this.images()
+    });
+  }
+
   // Clear grid with confirmation
   clearGrid(): void {
     if (confirm('Limpar todas as células do grid (sabores e títulos)?')) {
       this.flavorService.clearGrid();
       this.flavorService.clearHeaderGrid();
+      this.markAsChanged();
     }
   }
 
-  // Save changes and notify visor
-  saveChanges(): void {
-    // Force save to localStorage
-    this.flavorService.forceSave();
-    this.staticImagesService.forceSave();
-    
-    // Notify visor immediately using BroadcastChannel
-    const channel = new BroadcastChannel('ice-panel-updates');
-    channel.postMessage({
-      type: 'data-updated',
-      timestamp: new Date().toISOString(),
-      source: 'display'
-    });
-    channel.close();
-    
-    // Show success message
-    alert('✅ Mudanças salvas! O visor será atualizado imediatamente.');
-    
-    console.log('💾 Mudanças salvas no display:', new Date().toLocaleTimeString());
-  }
 }

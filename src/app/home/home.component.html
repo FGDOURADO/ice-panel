@@ -1,0 +1,26 @@
+<div class="home-container">
+  <header class="header">
+    <h1>{{ title }}</h1>
+    <p class="description">{{ description }}</p>
+  </header>
+
+  <main class="main-content">
+    <div class="menu-grid">
+      <a 
+        *ngFor="let item of menuItems" 
+        [routerLink]="item.route"
+        class="menu-card"
+        [style.background-color]="item.color"
+      >
+        <div class="card-icon">{{ item.icon }}</div>
+        <h2 class="card-title">{{ item.title }}</h2>
+        <p class="card-description">{{ item.description }}</p>
+      </a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>🚀 Sistema desenvolvido para gelateria</p>
+    <p>📱 Acesse de qualquer dispositivo</p>
+  </footer>
+</div>

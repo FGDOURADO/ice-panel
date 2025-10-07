@@ -174,8 +174,11 @@ export class VisorComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             console.log('📺 Recarregando visor na rota atual:', window.location.pathname);
             
-            // Verificar se estamos na rota do visor
-            if (window.location.pathname.includes('/visor')) {
+            // Verificar se estamos na rota do visor (mais robusto)
+            const currentPath = window.location.pathname;
+            const isOnVisor = currentPath.includes('/visor') || currentPath.endsWith('/visor');
+            
+            if (isOnVisor) {
               console.log('📺 Mantendo rota do visor, recarregando...');
               window.location.reload();
             } else {

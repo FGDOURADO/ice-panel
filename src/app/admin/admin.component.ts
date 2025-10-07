@@ -250,16 +250,51 @@ export class AdminComponent {
     
     console.log('⚙️ Admin: Dados salvos, enviando notificação...');
     
-    // Notificar visor via BroadcastChannel
-    const channel = new BroadcastChannel('ice-panel-updates');
-    channel.postMessage({
-      type: 'data-saved',
-      timestamp: new Date().toISOString(),
-      source: 'admin'
-    });
-    channel.close();
+    // Aguardar um pouco para garantir que os dados foram salvos
+    setTimeout(() => {
+      // Notificar visor via BroadcastChannel
+      const channel = new BroadcastChannel('ice-panel-updates');
+      
+      const message = {
+        type: 'data-saved',
+        timestamp: new Date().toISOString(),
+        source: 'admin'
+      };
+      
+      console.log('⚙️ Admin: Enviando mensagem:', message);
+      
+      channel.postMessage(message);
+      
+      // Aguardar um pouco antes de fechar o canal
+      setTimeout(() => {
+        channel.close();
+        console.log('⚙️ Admin: Canal fechado');
+      }, 100);
+      
+      console.log('⚙️ Admin: Mudanças salvas e visor notificado:', new Date().toLocaleTimeString());
+    }, 100);
+  }
+
+  // Método de teste para verificar BroadcastChannel
+  testBroadcastChannel(): void {
+    console.log('⚙️ Admin: Testando BroadcastChannel...');
     
-    console.log('⚙️ Admin: Mudanças salvas e visor notificado:', new Date().toLocaleTimeString());
+    const channel = new BroadcastChannel('ice-panel-updates');
+    
+    const testMessage = {
+      type: 'test',
+      timestamp: new Date().toISOString(),
+      source: 'admin-test'
+    };
+    
+    console.log('⚙️ Admin: Enviando mensagem de teste:', testMessage);
+    
+    channel.postMessage(testMessage);
+    
+    setTimeout(() => {
+      channel.close();
+      console.log('⚙️ Admin: Canal de teste fechado');
+    }, 100);
   }
 }
 

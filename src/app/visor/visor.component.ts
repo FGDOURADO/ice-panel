@@ -150,8 +150,10 @@ export class VisorComponent implements OnInit, OnDestroy {
     this.broadcastChannel = new BroadcastChannel('ice-panel-updates');
     
     this.broadcastChannel.addEventListener('message', (event) => {
+      console.log('📺 Visor recebeu mensagem:', event.data);
+      
       if (event.data.type === 'data-saved') {
-        console.log('📺 Visor recebeu notificação de atualização:', event.data.timestamp);
+        console.log('📺 Visor recebeu notificação de atualização:', event.data.timestamp, 'de:', event.data.source);
         
         // Verificar se realmente houve mudanças nas versões
         const currentFlavorVersion = this.flavorService.getDataVersion();

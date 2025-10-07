@@ -160,8 +160,17 @@ export class DisplayComponent {
     this.flavorService.forceSave();
     this.staticImagesService.forceSave();
     
+    // Notify visor immediately using BroadcastChannel
+    const channel = new BroadcastChannel('ice-panel-updates');
+    channel.postMessage({
+      type: 'data-updated',
+      timestamp: new Date().toISOString(),
+      source: 'display'
+    });
+    channel.close();
+    
     // Show success message
-    alert('✅ Mudanças salvas! O visor será atualizado automaticamente.');
+    alert('✅ Mudanças salvas! O visor será atualizado imediatamente.');
     
     console.log('💾 Mudanças salvas no display:', new Date().toLocaleTimeString());
   }

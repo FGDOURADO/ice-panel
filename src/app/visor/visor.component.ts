@@ -36,6 +36,7 @@ export class VisorComponent implements OnInit, OnDestroy {
   private lastHeaderGridState: string = '';
   private lastImagesState: string = '';
   private lastSettingsState: string = '';
+  private broadcastChannel: BroadcastChannel | null = null;
 
   // TV Mode detection
   isTVMode(): boolean {
@@ -127,6 +128,7 @@ export class VisorComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initializeStates();
     this.startAutoRefresh();
+    this.setupBroadcastListener();
   }
 
   ngOnDestroy(): void {
@@ -136,6 +138,9 @@ export class VisorComponent implements OnInit, OnDestroy {
     }
     if (this.hideScrollTimeout) {
       clearTimeout(this.hideScrollTimeout);
+    }
+    if (this.broadcastChannel) {
+      this.broadcastChannel.close();
     }
   }
 
@@ -160,6 +165,20 @@ export class VisorComponent implements OnInit, OnDestroy {
       clearInterval(this.refreshInterval);
       this.refreshInterval = null;
     }
+  }
+
+  // Setup broadcast listener for immediate updates
+  private setupBroadcastListener(): void {
+    this.broadcastChannel = new BroadcastChannel('ice-panel-updates');
+    this.broadcastChannel.onmessage = (event) => {
+      if (event.data.type === 'data-updated') {
+        console.log('📡 Recebida notificação de atualização:', event.data.source);
+        // Update timestamp immediately
+        this.lastRefresh.set(new Date());
+        // Force immediate refresh
+        window.location.reload();
+      }
+    };
   }
 
   // Check for changes and refresh if needed

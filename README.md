@@ -2,18 +2,26 @@
 
 Sistema de gerenciamento de painel de sorvetes com drag-and-drop.
 
-## Funcionalidades
+## 🚀 Acesso Rápido
 
-- **Admin**: Gerenciar categorias, títulos e imagens
-- **Display**: Configurar layout do painel
-- **Visor**: Exibição pública do painel
+- **🏠 Home**: https://fgdourado.github.io/ice-panel/
+- **📱 Display**: https://fgdourado.github.io/ice-panel/display
+- **⚙️ Admin**: https://fgdourado.github.io/ice-panel/admin
+- **👁️ Visor**: https://fgdourado.github.io/ice-panel/visor
 
-## Acesso
+## 📋 Funcionalidades
 
-- **Admin**: `/admin`
-- **Display**: `/display` 
-- **Visor**: `/visor`
+- ✅ Gerenciamento de categorias
+- ✅ Upload de imagens
+- ✅ Drag and drop
+- ✅ Layout responsivo
+- ✅ Deploy automático
+- ✅ Tema unificado
 
-## Deploy
+## 🛠️ Tecnologias
 
-Este projeto está configurado para deploy automático no GitHub Pages.
+- Angular 20
+- GitHub Pages
+- GitHub Actions
+- CSS Variables
+- LocalStorage
